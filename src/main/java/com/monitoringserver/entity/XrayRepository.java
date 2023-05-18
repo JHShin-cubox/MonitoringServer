@@ -23,7 +23,7 @@ public interface XrayRepository extends JpaRepository<XrayEntity, Integer> {
     @Query(value = "select " +
             "label_name, " +
             "label_id, " +
-            "product_name as name," +
+            "xray_name as name," +
             "count(*) as amount, " +
             "score," +
             "round(100. * count(*) / sum(count(*)) over (), 2) as percentage " +
