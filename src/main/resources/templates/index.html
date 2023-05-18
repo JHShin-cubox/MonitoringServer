@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>통합관리 시스템</title>
+    <script>
+        $(function(){
+            pcMqtt();
+            xrayMqtt();
+        })
+    </script>
+</head>
+<body>
+    <main layout:fragment="content">
+        <div class="sub_box">
+            <div class="title_box"></div>
+            <div class="main_b">
+                <div class="inbox5">
+                    <div class="title">Viewer PC
+<!--                        <span onclick="healthCheck()" class="healthCheck badge bg-primary ms-2 me-1">Health Check <i class='fa-solid fa-cog fa-spin ms-1'></i></span>-->
+                    </div>
+                    <div class="gr gr-viewer">
+                        <input type="hidden" id="pcCount" th:value="${viewerInfo.size()}">
+                        <th:block th:if="${viewerInfo.size() != 0}" th:each="statusList : ${viewerInfo}">
+                            <li class="d-inline-block">
+                                <div class="viewer px-1" th:classappend="${statusList.is_on == false} ? 'nonActive'" th:id="'xrayline'+${statusList.id}">
+    <!--                                <label id="toggleLabel" onclick="dashControl('onoff','1',false)">-->
+    <!--                                    <input class="toggleBox" role="switch" type="checkbox" />-->
+    <!--                                </label>-->
+                                    <input type="hidden" th:id="'pcStat'+${statusList.id}">
+                                    <div class="dashItem" th:onclick="moveRecord([[${statusList.id}+','+${statusList.type}]])">
+                                        <div class="statusImg">
+                                            <input th:id="'dashOpenStatus'+${statusList.id}" type="hidden" th:value="${statusList.is_on}">
+                                            <i th:class="'fa-solid'"
+                                               th:classappend="(${statusList.status == 'reading'} ? 'fa-cog fa-spin' : '' )+(
+                                               ${statusList.status == 'waiting'} ? 'fa-pause' : '')"></i>
+                                        </div>
+                                        <div class="dashDesc">
+                                            <p>[[${statusList.name}]]</p>
+                                            <p th:id="'status'+${statusList.id}">[[${statusList.status}]]</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </th:block>
+                        <th:block th:if="${viewerInfo.size() == 0}">
+                            <div class="noDevice">감지된 Viewer가 없습니다.</div>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="inbox5">
+                    <div class="title">Xray</div>
+                    <div class="gr gr-xray">
+                        <th:block th:each="statusList : ${xrayInfo}">
+                            <li class="d-inline-block">
+                                <div class="viewer px-1" th:classappend="${statusList.is_on == false} ? 'nonActive'" th:id="'xrayline'+${statusList.id}">
+                                    <input type="hidden" th:id="'pcStat'+${statusList.id}">
+                                    <div class="dashItem" th:onclick="moveRecord([[${statusList.id}+','+${statusList.type}]])">
+                                        <div class="statusImg">
+                                            <input th:id="'dashOpenStatus'+${statusList.id}" type="hidden" th:value="${statusList.is_on}">
+                                                <img th:src="(${statusList.status == 'end'} ? '/static/img/conveyorBelt_no.png' : '' )+(
+                                                   ${statusList.status == 'start'} ? '/static/img/conveyorBelt.png' : '')">
+                                        </div>
+                                        <div class="dashDesc">
+                                            <p>[[${statusList.name}]]</p>
+                                            <p th:id="'status'+${statusList.id}">[[${statusList.status}]]</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </th:block>
+                        <th:block th:if="${xrayInfo.size() == 0}">
+                            <div class="noDevice">감지된 X-Ray가 없습니다.</div>
+                        </th:block>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</body>
+</html>

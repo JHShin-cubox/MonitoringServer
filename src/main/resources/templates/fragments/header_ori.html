@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>통합관리 시스템</title>
+</head>
+<body>
+    <nav th:fragment="header" class="header">
+        <div class="container">
+            <a class="headerTitle" href="#">[[${sideHL}]]</a>
+            <form class="searchForm">
+                <div>
+                    <span>
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" placeholder="Search here...">
+                </div>
+            </form>
+            <ul class="headerMenu" onclick="toggleMenu()">
+                <a>
+                    <div class="items-center flex">
+                        <span>
+                            <img alt="..." class="headerConfig" src="/static/img/chin_top1.png">
+                        </span>
+                    </div>
+                </a>
+                <div class="hidden menuContainer">
+                    <a class="menuWrapper" href="/dash#pablo">
+                        <i class="fa-solid fa-address-card fa-lg"></i>
+                        <span class="ml-2">My profile</span>
+                    </a>
+                    <a class="menuWrapper" href="/dash#pablo">
+                        <i class="fa-solid fa-gear fa-lg"></i>
+                        <span class="ml-2">Settings</span>
+                    </a>
+                    <a class="menuWrapper" href="/dash#pablo"></a>
+                    <div class="h-0 border border-solid border-blueGray-100"></div>
+                    <a class="menuWrapper" href="/logOut">
+                        <i class="fa-solid fa-person-walking-dashed-line-arrow-right fa-lg"></i>
+                        <span class="ml-2">LogOut</span>
+                    </a>
+                </div>
+            </ul>
+        </div>
+    </nav>
+</body>
+</html>

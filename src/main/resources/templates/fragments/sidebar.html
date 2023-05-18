@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- 왼쪽메뉴 스크립트 -->
+    <script src="/static/js/leftmenu/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/static/js/leftmenu/jquery.navgoco.js"></script>
+    <!-- //왼쪽메뉴 스크립트 -->
+</head>
+<body>
+<nav th:fragment="sidebar">
+    <label for="menu_state"><i class="fa"></i></label>
+    <div class="left_title">
+        <a href="/">
+            <img src="/static/img/logo/logo_cubox_w.png" alt="" style="max-width: 170px;"/>
+        </a>
+    </div>
+    <!-- 메뉴 자동 -->
+    <ul class="nav" id="demo1">
+        <li class="open">
+            <a href="#" onclick="leftToggle(this)" style="background: url('/static/img/left_icon2.png');">Xray관리</a>
+            <ul class="menu2">
+                <li class="li-a"><a href="/">대시보드</a></li>
+                <li class="li-a"><a href="/xStat">통계조회</a></li>
+                <li class="li-a"><a href="/record">이력조회</a></li>
+            </ul>
+        </li>
+    </ul>
+    <div style="position: absolute; left: 10; bottom: 0; "></div>
+</nav>
+</body>
+</html>

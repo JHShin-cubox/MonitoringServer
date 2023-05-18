@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monitoringserver.mapper.OnOffHistoryMapper">
+
+    <select id="getAllHistory" resultType="com.monitoringserver.dto.OnOffHistoryDTO" >
+        SELECT
+            id, device_name, reg_date, is_on, device_id,
+            row_number() over(ORDER BY reg_date) AS row_num
+        FROM (
+            <if test="type == null or type eq('null')">
+                SELECT A.id, B.name AS device_name, A.reg_date, A.is_on, B.id as device_id
+                FROM viewer_onoff_history A
+                JOIN viewer_info B ON A.viewer_id = B.id
+                Union
+                SELECT A.id, B.name AS device_name, A.reg_date, A.is_on, B.id as device_id
+                FROM xray_onoff_history A
+                JOIN xray_info B ON A.xray_id = B.id
+            </if>
+            <if test="type eq('viewer')">
+                SELECT A.id, B.name AS device_name, A.reg_date, A.is_on, B.id as device_id
+                FROM viewer_onoff_history A
+                JOIN viewer_info B ON A.viewer_id = B.id
+            </if>
+            <if test="type eq('xray')">
+                SELECT A.id, B.name AS device_name, A.reg_date, A.is_on, B.id as device_id
+                FROM xray_onoff_history A
+                JOIN xray_info B ON A.xray_id = B.id
+            </if>
+        ) as subquery
+        <where>
+            <if test="deviceId != null">
+                AND device_id = #{deviceId}
+            </if>
+        </where>
+        ORDER BY row_num DESC;
+    </select>
+</mapper>

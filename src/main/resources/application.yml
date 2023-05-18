@@ -1,0 +1,47 @@
+mybatis:
+  configuration:
+    multiple-result-sets-enabled: false
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+    jdbc-type-for-null: varchar
+    default-fetch-size: 500
+  mapper-locations:
+    - classpath:mapper/*.xml
+spring:
+  profiles:
+    active: test
+  thymeleaf:
+    prefix: classpath:templates/
+    suffix: .html
+    cache: false
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mariadb://pdteam-dev-db.cvl9xeh1bwxz.ap-northeast-2.rds.amazonaws.com:3306/divisionserver
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: admin
+    password: cubox2022!
+  jpa:
+    open-in-view: false
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  devtools:
+    livereload:
+      enabled: true
+    remote:
+      restart:
+        enabled: true
+server:
+  port : 8080
+  forward-headers-strategy: native
+
+
+
+

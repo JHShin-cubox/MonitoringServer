@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css' />
+  <!-- use version 0.19.3 -->
+  <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+  <style>
+    #te4{
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body class="m-4">
+
+<form class="dropzone" id="myDropzone" enctype="multipart/form-data">
+  <button type="button" class="sbtn">등록</button>
+</form>
+<p id="te1" style="background-color: black; color: white;text-align: center;">대기중</p>
+<p id="te2" style="background-color: black; color: white;text-align: center;">확인중</p>
+<p id="te3" style="background-color: black; color: white;text-align: center;">확인완료</p>
+<div class="progress">
+  <div id="progress1" class="progress-bar bg-success" role="progressbar"></div>
+</div>
+<div id='box'>
+
+</div>
+<p id="te4" style="background-color: black; color: white;text-align: center;" onclick="exportExcel()">엑셀 다운 <font id="te5">소요시간 :</font> </p>
+
+
+
+<script>
+  Dropzone.autoDiscover = false;
+  const dropzone = new Dropzone(".dropzone", {
+    url: "http://xraydata.site:20400/verify/api/ImageTest/image-form", // 리눅스서버
+    // url: "http://172.16.153.179:7001/api/ImageTest/image-form", // 재환서버
+    method: "post", // 기본 post로 request 감. put으로도 할수있음
+    dictRemoveFile: '삭제', // 삭제버튼 표시 텍스트
+    paramName: 'image',
+    autoProcessQueue: false, // 드래그 드랍 후 바로 서버로 전송
+    acceptedFiles: '.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.bmp',
+    maxFiles: 9999,
+    parallelUploads: 9999,
+    maxFilesize: 9000,
+    init: function () {
+      // 최초 dropzone 설정시 init을 통해 호출
+      let firstTime;
+      let startTime;
+      let endTime;
+      let uploadTime;
+      let totalTime = 0;
+      let fileCount = 0;
+      let progressRate = 0;
+      $('#te2').hide();
+      $('#te3').hide();
+      $('#te4').hide();
+      console.log('최초 실행');
+      const arrayList = [];
+      let myDropzone = this; // closure 변수 (화살표 함수 쓰지않게 주의)
+
+      // 서버에 제출 submit 버튼 이벤트 등록
+      $('.sbtn').click(function(){
+        console.log('업로드');
+        // 거부된 파일이 있다면
+        myDropzone.processQueue(); // autoProcessQueue: false로 해주었기 때문에, 메소드 api로 파일을 서버로 제출
+      });
+
+      // 업로드한 파일을 서버에 요청하는 동안 호출 실행
+      myDropzone.on('sending', function (file, xhr, formData) {
+        $('#te1').hide();
+        $('#te2').show();
+        $('#te3').hide();
+        $('#te4').hide();
+        firstTime = new Date().getTime();
+        startTime = new Date().getTime();
+      });
+
+      // 서버로 파일이 성공적으로 전송되면 실행
+      myDropzone.on('success', function (file, responseText) {
+        file.uploadStartTime = new Date().getTime();
+        endTime = new Date().getTime();
+        uploadTime = endTime - startTime;
+        startTime = new Date().getTime();
+        const data = JSON.parse(responseText.data);
+        console.log(data.data)
+
+        const object = data.data[0]
+        let test1;
+        console.log(object.bbox)
+        console.log(object.bbox.toString())
+        let i = 0
+        for(const key of data.data){
+          if(i==0){
+            arrayList.push({
+              name : file.name,
+              bbox : key.bbox.toString(),
+              label: key.label,
+              label_id: key.label_id,
+              score: key.score,
+              time: uploadTime/1000+'초'
+            });
+          } else{
+            arrayList.push({
+              name : '',
+              bbox : key.bbox.toString(),
+              label: key.label,
+              label_id: key.label_id,
+              score: key.score,
+              time: ''
+            });
+          }
+          i++;
+        }
+
+        progressRate = progressRate + (100/fileCount);
+        $('#progress1').css('width',progressRate+'%');
+      });
+
+      myDropzone.on("addedfile", function() {
+        fileCount++;
+        console.log("대기 중인 파일 개수: " + fileCount);
+      });
+
+      myDropzone.on('complete', function (file) {
+        if (this.getQueuedFiles().length === 0 && this.getUploadingFiles().length === 0) {
+          console.log("All files have been uploaded");
+          totalTime = new Date().getTime() - firstTime;
+          $('#te5').html('전체 소요시간 : '+totalTime/1000+'초');
+          $('#te1').hide();
+          $('#te2').hide();
+          $('#te3').show();
+          $('#te4').show();
+        }
+        const columnNames = ["파일명","비박스", "라벨명", "라벨ID", "점수", "소요시간"];
+        const tableData = [columnNames, ...arrayList.map(item => Object.values(item))];
+        const ws = XLSX.utils.aoa_to_sheet(tableData);
+        const html_string = XLSX.utils.sheet_to_html(ws, { id: "myTable", editable: true });
+        $("#box").html(html_string);
+      });
+
+      // 업로드 에러 처리
+      this.on('error', function (file, errorMessage) {
+        console.log('오류 발생:', JSON.stringify(errorMessage));
+      });
+    },
+  });
+
+  function exportExcel(){
+    var wb = XLSX.utils.table_to_book(document.getElementById('myTable'), {sheet:"test",raw:true});
+    XLSX.writeFile(wb, ('test.xlsx'));
+  }
+
+
+</script>
+</body>
+</html>

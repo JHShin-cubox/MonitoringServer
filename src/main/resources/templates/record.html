@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>통합관리 시스템</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="sub_box">
+        <div class="title_box">
+            <div class="title_tx">이력조회</div>
+            <div class="route"></div>
+        </div>
+        <form id="frmSearch" name="frmSearch" method="post" onsubmit="return false;">
+            <!--검색박스 -->
+            <div class="search_box mb_20">
+                <div class="search_in_bline">
+                    <div class="comm_search mr_40">
+                        <label for="search-from-date" class="title">상태값</label>
+                        <select onchange="moveRecord(this.value)" class="w_300px input_com">
+                            <option value="">전체</option>
+                            <th:block th:each="selList : ${selLists}">
+                            <option th:selected="${selList.id == deviceId and selList.type == deviceType}" th:value="${selList.id}+','+${selList.type}">[[${selList.type}+' '+${selList.name}]]</option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+                <form id="srh_form" action="/record" method="get">
+                    <input type="hidden" id="searchDateType" name="searchDateType">
+                </form>
+            </div>
+            <!--//검색박스 -->
+            <!--------- 목록--------->
+            <div class="com_box ">
+                <div class="totalbox">
+                    <div class="txbox">
+                        <b class="fl mr_10">전체 : [[${totalCount}]]건</b>
+                    </div>
+                </div>
+                <!--버튼 -->
+                <!--//버튼  -->
+                <!--테이블 시작 -->
+                <div class="tb_outbox">
+                    <table class="tb_list">
+                        <colgroup>
+                            <col width="10%"><col width="10%"><col width="15%"><col width="10%">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>순번</th>
+                            <th>기계정보</th>
+                            <th>시간</th>
+                            <th>전원</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="recordList : ${recordLists}">
+                            <tr>
+                                <td>[[${recordList.rowNum}]]</td>
+                                <td>[[${recordList.deviceName}]]</td>
+                                <td>[[${#strings.substring(#dates.format(recordList.regDate, 'yyyy-MM-dd HH:mm:ss'),0,16)}]]</td>
+                                <td th:if="${recordList.isOn} == true"><span class="badge bg-success">ON</span></td>
+                                <td th:if="${recordList.isOn} == false"><span class="badge bg-danger">OFF</span></td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+        <div class="pagebox" th:with="start=${(recordLists.number/maxPage)*maxPage + 1}, end=(${(recordLists.totalPages == 0) ? 1 : (start + (maxPage -1) < recordLists.totalPages ? start + (maxPage -1) : recordLists.totalPages)})">
+            <a th:if="${deviceId} == null" th:href="'/record?page='+${start-2}+'&type='+${deviceType}" th:classappend="${start} ==1 ? 'disabled'"   class="ar1"><img src="/static/img/al_icon3.png" alt=""></a>
+            <a th:if="${deviceId} != null" th:href="'/record/'+${deviceId}+'?page='+${start-2}+'&type='+${deviceType}" th:classappend="${start} ==1 ? 'disabled'"   class="ar1"><img src="/static/img/al_icon3.png" alt=""></a>
+
+            <a th:if="${deviceId} == null" th:classappend="${recordLists.first}? 'disabled'" th:href="@{'/record?page=' + ${recordLists.number-1}+'&type='+${deviceType}}" class="ar"><img src="/static/img/al_icon2.png" alt=""></a>
+            <a th:if="${deviceId} != null" th:classappend="${recordLists.first}? 'disabled'" th:href="@{'/record/'+${deviceId}+'?page=' + ${recordLists.number-1}+'&type='+${deviceType}}" class="ar"><img src="/static/img/al_icon2.png" alt=""></a>
+
+            <a th:if="${deviceId} == null" th:href="@{'/record?page=' + ${page-1}+'&type='+${deviceType}}" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${recordLists.number eq page-1}?'on':''" class="um">[[${page}]]</a>
+            <a th:if="${deviceId} != null" th:href="@{'/record/'+${deviceId}+'?page=' + ${page-1}+'&type='+${deviceType}}" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${recordLists.number eq page-1}?'on':''" class="um">[[${page}]]</a>
+
+            <a th:if="${deviceId} == null" th:href="@{'/record?page=' + ${recordLists.number+1}+'&type='+${deviceType}}" th:classappend="${recordLists.last}? 'disabled'"  class="ar"><img src="/static/img/ar_icon2.png" alt=""></a>
+            <a th:if="${deviceId} != null" th:href="@{'/record/'+${deviceId}+'?page=' + ${recordLists.number+1}+'&type='+${deviceType}}" th:classappend="${recordLists.last}? 'disabled'"  class="ar"><img src="/static/img/ar_icon2.png" alt=""></a>
+
+            <a th:if="${deviceId} == null" th:href="'/record?page='+${end}+'&type='+${deviceType}" th:classappend="${recordLists.last}? 'disabled'"  class="ar1"><img src="/static/img/ar_icon3.png" alt=""></a>
+            <a th:if="${deviceId} != null" th:href="'/record/'+${deviceId}+'?page='+${end}+'&type='+${deviceType}" th:classappend="${recordLists.last}? 'disabled'"  class="ar1"><img src="/static/img/ar_icon3.png" alt=""></a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

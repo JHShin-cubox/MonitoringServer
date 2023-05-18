@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monitoringserver.mapper.XrayStatisticMapper">
+
+    <select id="getXrayStatistic" resultType="com.monitoringserver.dto.XrayStatisticDTO" >
+        SELECT
+            xray_name,
+            label_id,
+            label_name ,
+            count(*) AS amount,
+            score,
+            round(100. * count(*) / sum(count(*)) over (), 2) AS percentage
+        FROM xray_analyze_statistics
+        GROUP BY label_id
+        ORDER BY percentage DESC;
+    </select>
+</mapper>

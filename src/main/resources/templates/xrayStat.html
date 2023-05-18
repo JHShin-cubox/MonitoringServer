@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>통합관리 시스템</title>
+</head>
+<body>
+<main layout:fragment="content">
+  <div class="sub_box">
+    <div class="title_box">
+      <div class="title_tx">통계조회</div>
+      <div class="route"></div>
+    </div>
+    <form id="frmSearch" name="frmSearch" method="post" onsubmit="return false;">
+      <!--검색박스 -->
+      <div class="search_box mb_20">
+<!--        <div class="search_in_bline">-->
+<!--          <div class="comm_search mr_20">-->
+<!--            <label for="search-from-date" class="title">인증요청일자</label>-->
+<!--            <input type="text" class="w_150px fl" placeholder="품목" value="2023-04-18">-->
+<!--            <div class="sp_tx fl">~</div>-->
+<!--          </div>-->
+<!--          <div class="comm_search ml_40">-->
+<!--            <div class="search_btn2" onclick="fnSearch();"></div>-->
+<!--          </div>-->
+<!--          <div class="comm_search ml_45">-->
+<!--            <button type="button" class="comm_btn" id="btnReset">초기화</button>-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
+      <!--//검색박스 -->
+      <!--------- 목록--------->
+      <div class="com_box ">
+        <div class="totalbox">
+          <div class="txbox">
+            <b class="fl mr_10">전체 : [[${totalCount}]]건</b>
+          </div>
+        </div>
+        <!--버튼 -->
+        <!--//버튼  -->
+        <!--테이블 시작 -->
+        <div class="tb_outbox">
+          <table class="tb_list">
+            <colgroup>
+              <col width="20%"><col width="30%"><col width="10%"><col width="40%">
+            </colgroup>
+            <thead>
+            <tr>
+              <th>라벨ID</th>
+              <th>품명</th>
+              <th>검출수</th>
+              <th>점수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="statList : ${xrayStatList}">
+            <tr>
+              <td>[[${statList.labelId}]]</td>
+              <td>[[${statList.labelName}]]</td>
+              <td>[[${statList.amount}]]</td>
+              <td style="padding: 0 15px">
+                <div class="progress" th:title="${statList.percentage}">
+                  <div class="progress-bar bg-danger" role="progressbar"  th:style="'width:'+${statList.percentage}+'%'" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </td>
+            </tr>
+            </th:block>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+      <!--     페이징 처리       -->
+      <div class="pagebox" th:with="start=${(xrayStatList.number/maxPage)*maxPage + 1}, end=(${(xrayStatList.totalPages == 0) ? 1 : (start + (maxPage -1) < xrayStatList.totalPages ? start + (maxPage -1) : xrayStatList.totalPages)})">
+        <a th:href="'/xStat?page='+${start-2}" th:classappend="${start}==1? 'disabled'" class="ar1"><img src="/static/img/al_icon3.png" alt=""></a>
+        <a th:classappend="${xrayStatList.first}? 'disabled'" th:href="@{'/xStat?page=' + ${xrayStatList.number-1}}" class="ar"><img src="/static/img/al_icon2.png" alt=""></a>
+        <a th:href="@{'/xStat?page=' + ${page-1}}" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${xrayStatList.number eq page-1}?'on':''" class="um">[[${page}]]</a>
+        <a th:href="@{'/xStat?page=' + ${xrayStatList.number+1}}" th:classappend="${xrayStatList.last}? 'disabled'"  class="ar"><img src="/static/img/ar_icon2.png" alt=""></a>
+        <a th:href="'/xStat?page='+${end}" th:classappend="${xrayStatList.last}? 'disabled'"  class="ar1"><img src="/static/img/ar_icon3.png" alt=""></a>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
