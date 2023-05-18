@@ -21,7 +21,7 @@ public interface XrayRepository extends JpaRepository<XrayEntity, Integer> {
     XrayStatDTO getOneByLabelId(@Param("label_id") String labelId);
 
     @Query(value = "select " +
-            "ip, " +
+            "label_name, " +
             "label_id, " +
             "product_name as name," +
             "count(*) as amount, " +
