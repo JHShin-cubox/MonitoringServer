@@ -1,6 +1,9 @@
 package com.monitoringserver.service;
 
+import com.monitoringserver.dto.CountLabelIdDTO;
+import com.monitoringserver.dto.XrayStatDTO;
 import com.monitoringserver.dto.XrayStatisticDTO;
+import com.monitoringserver.entity.XrayRepository;
 import com.monitoringserver.mapper.XrayStatisticMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,7 +18,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class XrayServiceImpl implements XrayService{
 
+
     private final XrayStatisticMapper xrayStatisticMapper;
+    private final XrayRepository xrayRepository;
 
     @Override
     public Page<XrayStatisticDTO> getAllStatistics(Optional<Integer> page, Pageable pageable) {
@@ -29,5 +34,20 @@ public class XrayServiceImpl implements XrayService{
     public Integer getStatCount() {
         List<XrayStatisticDTO> statList = xrayStatisticMapper.getXrayStatistic();
         return statList.size();
+    }
+
+    @Override
+    public XrayStatDTO getOneByLabelId(String labelId) {
+        return xrayRepository.getOneByLabelId(labelId);
+    }
+
+    @Override
+    public List<XrayStatDTO> getAllStatistics2() {
+        return xrayRepository.getAllStatistics();
+    }
+
+    @Override
+    public List<CountLabelIdDTO> countAllLabelId() {
+        return xrayRepository.countAllLabelId();
     }
 }
