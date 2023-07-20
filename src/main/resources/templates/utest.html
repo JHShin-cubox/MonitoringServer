@@ -12,7 +12,7 @@
   <!-- use version 0.19.3 -->
   <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
   <style>
-    #te4{
+    #pExcel{
       cursor: pointer;
     }
   </style>
@@ -23,27 +23,26 @@
 <form class="dropzone" id="myDropzone" enctype="multipart/form-data">
   <button type="button" class="sbtn">등록</button>
 </form>
-<p id="te1" style="background-color: black; color: white;text-align: center;">대기중</p>
-<p id="te2" style="background-color: black; color: white;text-align: center;">확인중</p>
-<p id="te3" style="background-color: black; color: white;text-align: center;">확인완료</p>
+<p id="pWaiting" style="background-color: black; color: white;text-align: center;">대기중</p>
+<p id="pChecking" style="background-color: black; color: white;text-align: center;">확인중</p>
+<p id="pComplete" style="background-color: black; color: white;text-align: center;">확인완료</p>
 <div class="progress">
   <div id="progress1" class="progress-bar bg-success" role="progressbar"></div>
 </div>
-<div id='box'>
-
-</div>
-<p id="te4" style="background-color: black; color: white;text-align: center;" onclick="exportExcel()">엑셀 다운 <font id="te5">소요시간 :</font> </p>
-
-
+<div id='box'></div>
+<p id="pExcel" style="background-color: black; color: white;text-align: center;" onclick="exportExcel()">엑셀 다운
+  <span id="te5">소요시간 :</span>
+</p>
 
 <script>
   Dropzone.autoDiscover = false;
   const dropzone = new Dropzone(".dropzone", {
     url: "http://xraydata.site:20400/verify/api/ImageTest/image-form", // 리눅스서버
     // url: "http://172.16.153.179:7001/api/ImageTest/image-form", // 재환서버
+    // url: "http://localhost:8080/upload",
     method: "post", // 기본 post로 request 감. put으로도 할수있음
     dictRemoveFile: '삭제', // 삭제버튼 표시 텍스트
-    paramName: 'image',
+    paramName: 'file',
     autoProcessQueue: false, // 드래그 드랍 후 바로 서버로 전송
     acceptedFiles: '.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF,.bmp',
     maxFiles: 9999,
@@ -58,9 +57,9 @@
       let totalTime = 0;
       let fileCount = 0;
       let progressRate = 0;
-      $('#te2').hide();
-      $('#te3').hide();
-      $('#te4').hide();
+      $('#pChecking').hide();
+      $('#pComplete').hide();
+      $('#pExcel').hide();
       console.log('최초 실행');
       const arrayList = [];
       let myDropzone = this; // closure 변수 (화살표 함수 쓰지않게 주의)
@@ -74,10 +73,10 @@
 
       // 업로드한 파일을 서버에 요청하는 동안 호출 실행
       myDropzone.on('sending', function (file, xhr, formData) {
-        $('#te1').hide();
-        $('#te2').show();
-        $('#te3').hide();
-        $('#te4').hide();
+        $('#pWaiting').hide();
+        $('#pChecking').show();
+        $('#pComplete').hide();
+        $('#pExcel').hide();
         firstTime = new Date().getTime();
         startTime = new Date().getTime();
       });
@@ -89,12 +88,6 @@
         uploadTime = endTime - startTime;
         startTime = new Date().getTime();
         const data = JSON.parse(responseText.data);
-        console.log(data.data)
-
-        const object = data.data[0]
-        let test1;
-        console.log(object.bbox)
-        console.log(object.bbox.toString())
         let i = 0
         for(const key of data.data){
           if(i==0){
@@ -118,25 +111,27 @@
           }
           i++;
         }
-
         progressRate = progressRate + (100/fileCount);
         $('#progress1').css('width',progressRate+'%');
       });
 
-      myDropzone.on("addedfile", function() {
+      myDropzone.on("addedfile", function(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        console.log(file)
         fileCount++;
         console.log("대기 중인 파일 개수: " + fileCount);
       });
 
       myDropzone.on('complete', function (file) {
         if (this.getQueuedFiles().length === 0 && this.getUploadingFiles().length === 0) {
-          console.log("All files have been uploaded");
+          console.log(file);
           totalTime = new Date().getTime() - firstTime;
           $('#te5').html('전체 소요시간 : '+totalTime/1000+'초');
-          $('#te1').hide();
-          $('#te2').hide();
-          $('#te3').show();
-          $('#te4').show();
+          $('#pWaiting').hide();
+          $('#pChecking').hide();
+          $('#pComplete').show();
+          $('#pExcel').show();
         }
         const columnNames = ["파일명","비박스", "라벨명", "라벨ID", "점수", "소요시간"];
         const tableData = [columnNames, ...arrayList.map(item => Object.values(item))];
@@ -148,6 +143,7 @@
       // 업로드 에러 처리
       this.on('error', function (file, errorMessage) {
         console.log('오류 발생:', JSON.stringify(errorMessage));
+
       });
     },
   });
@@ -156,8 +152,6 @@
     var wb = XLSX.utils.table_to_book(document.getElementById('myTable'), {sheet:"test",raw:true});
     XLSX.writeFile(wb, ('test.xlsx'));
   }
-
-
 </script>
 </body>
 </html>
