@@ -36,6 +36,8 @@ spring:
     remote:
       restart:
         enabled: true
+  upload:
+    dir: /path/upload
 server:
   port : 8081
   forward-headers-strategy: native
