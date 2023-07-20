@@ -1,6 +1,5 @@
 package com.monitoringserver;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,7 +18,6 @@ import static org.springframework.web.servlet.function.RequestPredicates.GET;
 import static org.springframework.web.servlet.function.RouterFunctions.route;
 
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-@MapperScan("com.monitoringserver.mapper")
 public class MonitoringServerApplication {
 
     public static void main(String[] args) {

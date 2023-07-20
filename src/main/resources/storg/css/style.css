@@ -1,0 +1,206 @@
+
+.disabled{
+    pointer-events: none;
+    cursor: default;
+    background-color: #80808040 !important;
+}
+.viewer{
+    box-shadow:3px 3px 30px rgba(51,102,204,0.2);
+    /* box-shadow: 3px 3px 30px rgb(0 5 114 / 6%); */
+    box-shadow: -2px 0px 31px #adadad94;
+    /*cursor: pointer;*/
+    border-radius: 5px;
+    width: 100%;
+    height: 200px;
+    position: relative;
+
+}
+.loginCheck{
+    display: none;
+    color: red;
+}
+
+.reading {
+    position: absolute;
+    left: 50%;
+    top: 43%;
+    transform: translate(-50%, -50%);
+
+}
+
+.reading > img {
+    width: 275px;
+}
+
+.gr{
+    /*display: flex;*/
+    /*justify-content: space-evenly;*/
+    margin-left: 15px;
+}
+
+.gr-viewer, .gr-xray{
+    /*display: flex;*/
+    /*justify-content: space-evenly;*/
+    display: grid;
+    grid-gap: 25px;
+    grid-template-columns: repeat(3, minmax(auto, 1fr));
+    align-items: center;
+    justify-content: space-around;
+    margin: 0;
+}
+.gr > li {
+    /* padding: 0 20px; */
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 0 20px;
+
+}
+
+.dashItem {
+    position: absolute;
+    border-radius: 10px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 90%;
+    background-color:#258915;
+    bottom: 30px;
+
+}
+
+
+.imgHide {
+    display: none !important;
+}
+
+.dashDesc{
+    text-align: center;
+    line-height: 25px;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    color: #ffff;
+}
+
+.dashDesc > p:first-child {
+    font-size: 20px;
+}
+
+.statusImg{
+    margin: 30px 0 10px 0 ;
+    text-align: center;
+    font-size: 1.5rem;
+    transition: 0.5s;
+}
+.nowTime{
+    font-size: 16px;
+    color: #000;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    margin-right: 5px;
+    line-height: 35px;
+}
+.statusImg > img {
+    width: 80px;
+}
+.statusImg > i {
+    font-size: 55px;
+    padding: 14px 0;
+}
+
+.nonActive{
+    transition: 0.5s;
+    background-color: #000000a1 !important;
+}
+.dashReading{
+    color: #3b75e3;
+}
+.fa-solid{
+    -webkit-transition: all 0.5s;
+    transition: all 0.5s;
+}
+/*토글 제어*/
+#toggleLabel{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    position: relative;
+    top: 6px;
+    left: 5px;
+}
+#toggleLabel > input[type="checkbox"]{
+    width: 27px;
+    height: 16px;
+}
+.toggleBox {
+    appearance: none;
+    position: relative;
+    border: max(2px, 0.1em) solid gray;
+    border-radius: 1.25em;
+    width: 2.25em;
+    height: 1.25em;
+}
+
+.toggleBox::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    transform: scale(0.8);
+    background-color: gray;
+    transition: left 250ms linear;
+}
+
+.toggleBox:checked {
+    background-color: tomato;
+    border-color: tomato;
+}
+
+.toggleBox:checked::before {
+    background-color: white;
+    left: 1em;
+}
+
+.toggleBox:disabled {
+    border-color: lightgray;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.toggleBox:disabled:before {
+    background-color: lightgray;
+}
+
+.toggleBox:disabled + span {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.toggleBox:focus-visible {
+    outline-offset: max(2px, 0.1em);
+    outline: max(2px, 0.1em) solid tomato;
+}
+
+.toggleBox:enabled:hover {
+    box-shadow: 0 0 0 max(4px, 0.2em) lightgray;
+}
+/*토글 제어*/
+.healthCheck{
+    cursor: pointer;
+}
+.noDevice{
+    padding: 100px 0;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.swiper_toggle{
+    position: absolute;
+    left: 96%;
+    top: 2%;
+    cursor: pointer;
+    z-index: 999999;
+    width: 35px;
+}

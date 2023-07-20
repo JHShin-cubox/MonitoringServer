@@ -3,6 +3,7 @@ package com.monitoringserver.service;
 import com.monitoringserver.dto.DeviceDTO;
 import com.monitoringserver.mapper.DeviceInfoMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

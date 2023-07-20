@@ -14,9 +14,7 @@ spring:
     prefix: classpath:templates/
     suffix: .html
     cache: false
-  mvc:
-    path match:
-      matching-strategy: ant_path_matcher
+
   main:
     allow-bean-definition-overriding: true
   datasource:
@@ -29,7 +27,7 @@ spring:
     generate-ddl: true
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   devtools:
@@ -39,7 +37,7 @@ spring:
       restart:
         enabled: true
 server:
-  port : 8080
+  port : 8081
   forward-headers-strategy: native
 
 

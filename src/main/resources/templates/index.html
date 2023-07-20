@@ -11,72 +11,106 @@
             xrayMqtt();
         })
     </script>
+    <script>
+        function toggleSwiper(){
+            $('.swiper_toggle').toggleClass("off")
+            if($('.swiper_toggle').hasClass("off")){
+                swiper.autoplay.stop();
+                $('.swiper_toggle').attr('src','/storg/img/play_icon.png');
+            } else {
+                swiper.autoplay.start();
+                $('.swiper_toggle').attr('src','/storg/img/pause_icon.png');
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 </head>
 <body>
     <main layout:fragment="content">
         <div class="sub_box">
-            <div class="title_box"></div>
             <div class="main_b">
                 <div class="inbox5">
-                    <div class="title">Viewer PC
-<!--                        <span onclick="healthCheck()" class="healthCheck badge bg-primary ms-2 me-1">Health Check <i class='fa-solid fa-cog fa-spin ms-1'></i></span>-->
-                    </div>
-                    <div class="gr gr-viewer">
-                        <input type="hidden" id="pcCount" th:value="${viewerInfo.size()}">
-                        <th:block th:if="${viewerInfo.size() != 0}" th:each="statusList : ${viewerInfo}">
-                            <li class="d-inline-block">
-                                <div class="viewer px-1" th:classappend="${statusList.is_on == false} ? 'nonActive'" th:id="'xrayline'+${statusList.id}">
-    <!--                                <label id="toggleLabel" onclick="dashControl('onoff','1',false)">-->
-    <!--                                    <input class="toggleBox" role="switch" type="checkbox" />-->
-    <!--                                </label>-->
-                                    <input type="hidden" th:id="'pcStat'+${statusList.id}">
-                                    <div class="dashItem" th:onclick="moveRecord([[${statusList.id}+','+${statusList.type}]])">
-                                        <div class="statusImg">
-                                            <input th:id="'dashOpenStatus'+${statusList.id}" type="hidden" th:value="${statusList.is_on}">
-                                            <i th:class="'fa-solid'"
-                                               th:classappend="(${statusList.status == 'reading'} ? 'fa-cog fa-spin' : '' )+(
-                                               ${statusList.status == 'waiting'} ? 'fa-pause' : '')"></i>
-                                        </div>
-                                        <div class="dashDesc">
-                                            <p>[[${statusList.name}]]</p>
-                                            <p th:id="'status'+${statusList.id}">[[${statusList.status}]]</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </th:block>
-                        <th:block th:if="${viewerInfo.size() == 0}">
-                            <div class="noDevice">감지된 Viewer가 없습니다.</div>
-                        </th:block>
+                    <img class="swiper_toggle" src="/storg/img/pause_icon.png" onclick="toggleSwiper(this)">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <div class="title">Check PC</div>
+                                <ul class="gr gr-viewer">
+                                    <input type="hidden" id="pcCount" th:value="${viewerInfo.size()}">
+                                    <th:block th:if="${viewerInfo.size() != 0}" th:each="statusList : ${viewerInfo}">
+                                        <input th:id="'dashOpenStatus'+${statusList.id}" type="hidden" th:value="${statusList.isOn}">
+                                        <input type="hidden" th:id="'pcStat'+${statusList.id}">
+                                        <li class="d-inline-block">
+                                            <div class="viewer" th:id="'xrayline'+${statusList.id}">
+                                                <div class="content_info" th:classappend="(${statusList.status == 'reading' and statusList.isOn == true} ? 'reading_status' : '' )+(
+                                                   ${statusList.status == 'reading' and statusList.isOn == false} ? 'reading_status dimmed' : '')+(
+                                                   ${statusList.status == 'waiting' and statusList.isOn == true} ? 'waiting_status' : '')+(
+                                                   ${statusList.status == 'waiting' and statusList.isOn == false} ? 'waiting_status dimmed' : '')">
+                                                    <div class="status">
+                                                        <div class="status_wrapper">
+                                                            <p class="status_tittle" th:id="'status'+${statusList.id}">[[${statusList.status}]]</p>
+                                                            <p class="status_num">[[${statusList.name}]]</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="status_icon">
+                                                        <img th:if="${statusList.status == 'reading'}" src="/storg/img/reading_icon.png" alt="">
+                                                        <img th:if="${statusList.status == 'waiting'}" src="/storg/img/waiting_icon.png" alt="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </th:block>
+                                    <th:block th:if="${viewerInfo.size() == 0}">
+                                        <div class="noDevice">감지된 Viewer가 없습니다.</div>
+                                    </th:block>
+                                </ul>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="title">X-Ray</div>
+                                <ul class="gr gr-xray">
+                                    <input type="hidden" id="pcCount" th:value="${xrayInfo.size()}">
+                                    <th:block th:if="${xrayInfo.size() != 0}" th:each="statusList : ${xrayInfo}">
+                                        <input th:id="'dashOpenStatus'+${statusList.id}" type="hidden" th:value="${statusList.isOn}">
+                                        <input type="hidden" th:id="'pcStat'+${statusList.id}">
+                                        <li class="d-inline-block">
+                                            <div class="viewer" th:id="'xrayline'+${statusList.id}">
+                                                <div class="content_info" th:classappend="(${statusList.status == 'start' and statusList.isOn == true} ? 'reading_status' : '' )+(
+                                                   ${statusList.status == 'start' and statusList.isOn == false} ? 'reading_status dimmed' : '')+(
+                                                   ${statusList.status == 'end' and statusList.isOn == true} ? 'waiting_status' : '')+(
+                                                   ${statusList.status == 'end' and statusList.isOn == false} ? 'waiting_status dimmed' : '')">
+                                                    <div class="status">
+                                                        <div class="status_wrapper">
+                                                            <p class="status_tittle" th:id="'status'+${statusList.id}">[[${statusList.status}]]</p>
+                                                            <p class="status_num">[[${statusList.name}]]</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="status_icon">
+                                                        <img th:if="${statusList.status == 'start'}" src="/storg/img/reading_icon.png" alt="">
+                                                        <img th:if="${statusList.status == 'end'}" src="/storg/img/waiting_icon.png" alt="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </th:block>
+                                    <th:block th:if="${xrayInfo.size() == 0}">
+                                        <div class="noDevice">감지된 Viewer가 없습니다.</div>
+                                    </th:block>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="inbox5">
-                    <div class="title">Xray</div>
-                    <div class="gr gr-xray">
-                        <th:block th:each="statusList : ${xrayInfo}">
-                            <li class="d-inline-block">
-                                <div class="viewer px-1" th:classappend="${statusList.is_on == false} ? 'nonActive'" th:id="'xrayline'+${statusList.id}">
-                                    <input type="hidden" th:id="'pcStat'+${statusList.id}">
-                                    <div class="dashItem" th:onclick="moveRecord([[${statusList.id}+','+${statusList.type}]])">
-                                        <div class="statusImg">
-                                            <input th:id="'dashOpenStatus'+${statusList.id}" type="hidden" th:value="${statusList.is_on}">
-                                                <img th:src="(${statusList.status == 'end'} ? '/static/img/conveyorBelt_no.png' : '' )+(
-                                                   ${statusList.status == 'start'} ? '/static/img/conveyorBelt.png' : '')">
-                                        </div>
-                                        <div class="dashDesc">
-                                            <p>[[${statusList.name}]]</p>
-                                            <p th:id="'status'+${statusList.id}">[[${statusList.status}]]</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </th:block>
-                        <th:block th:if="${xrayInfo.size() == 0}">
-                            <div class="noDevice">감지된 X-Ray가 없습니다.</div>
-                        </th:block>
-                    </div>
-                </div>
-
+                <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+                <script>
+                    var swiper = new Swiper(".mySwiper", {
+                        autoplay: {
+                            delay: 2500,
+                            disableOnInteraction: false,
+                        },
+                        loop:true,
+                        speed:2500,
+                    });
+                </script>
             </div>
         </div>
     </main>
