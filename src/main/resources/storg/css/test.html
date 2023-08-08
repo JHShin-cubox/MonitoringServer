@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script
+  src="https://code.jquery.com/jquery-3.7.0.min.js"
+  integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <style>
+        body { background-color: #ffff; }
+        .circle_progress_wrap {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        margin-bottom: 30px;
+        }
+        .circle_progress { transform: rotate(-90deg);}
+        .frame, .bar, .bar2, .bar3 { fill: none; }
+        .frame { stroke: #e6e6e6; }
+        .bar, .bar2, .bar3 {
+        stroke: #03c75a;
+        stroke-linecap: round;
+        transition: 1s;
+        }
+        .value {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        text-align: center;
+        color: #888;
+        font-size: 16px;
+        line-height: 140px;}
+        .container{display: flex;height: 90vh;}
+        .wrap{background-color: black; width: 100%; height: 100%; color: white;}
+        .sub_wrap{background-color: orange; width: 20%;}
+    </style>
+    <script>
+    
+    </script>
+    <div class="container">
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="wrap">
+                        1
+                    </div>  
+                </div>
+                <div class="swiper-slide">
+                    <div class="wrap">
+                        2 
+                    </div>  
+                </div>
+                <div class="swiper-slide">
+                    <div class="wrap">
+                        3 
+                    </div>  
+                </div>
+            </div>
+        </div>
+        <div class="sub_wrap">
+            <div class="circle_progress_wrap">
+                <svg class="circle_progress" width="140" height="140" viewBox="0 0 140 140">
+                <circle class="frame" cx="70" cy="70" r="64" stroke-width="12" />
+                <circle class="bar" cx="70" cy="70" r="64" stroke-width="12" />
+                </svg>
+                <input id="control" type="hidden" value="60" />
+                <strong id="reading" class="value"></strong>
+            </div>
+            <div class="circle_progress_wrap">
+                <svg class="circle_progress" width="140" height="140" viewBox="0 0 140 140">
+                <circle class="frame" cx="70" cy="70" r="64" stroke-width="12" />
+                <circle class="bar2" cx="70" cy="70" r="64" stroke-width="12" />
+                </svg>
+                <input id="control" type="hidden" value="60" />
+                <strong id="reading" class="value"></strong>
+            </div>
+            <div class="circle_progress_wrap">
+                <svg class="circle_progress" width="140" height="140" viewBox="0 0 140 140">
+                <circle class="frame" cx="70" cy="70" r="64" stroke-width="12" />
+                <circle class="bar3" cx="70" cy="70" r="64" stroke-width="12" />
+                </svg>
+                <input id="control" type="hidden" value="60" />
+                <strong id="reading" class="value"></strong>
+            </div>
+              
+        </div> 
+    </div>
+    
+    
+
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    var control = document.getElementById('control');
+    var bar = document.querySelector('.bar');
+    var bar2 = document.querySelector('.bar2');
+    var bar3 = document.querySelector('.bar3');
+    var value = document.querySelector('.value');
+
+    var RADIUS = 64;
+    var CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+    function progress(per) {
+        var progress = per / 100;
+        var dashoffset = CIRCUMFERENCE * (1 - progress);
+
+        value.innerHTML = per + '%';
+        bar.style.strokeDashoffset = dashoffset;
+        bar2.style.strokeDashoffset = dashoffset;
+        bar3.style.strokeDashoffset = dashoffset;
+    }
+
+    control.addEventListener('input', function(event) {
+        progress(event.target.valueAsNumber);
+    });
+    control.addEventListener('change', function(event) {
+        progress(event.target.valueAsNumber);
+    });
+
+    bar.style.strokeDasharray = CIRCUMFERENCE;
+    bar2.style.strokeDasharray = CIRCUMFERENCE;
+    bar3.style.strokeDasharray = CIRCUMFERENCE;
+    progress(60);
+    });
+    
+        var swiper = new Swiper(".mySwiper", {
+            autoplay: {
+                delay: 2500,
+                disableOnInteraction: false,
+            },
+            loop:true,
+            speed:2500,
+            on: {
+                slideChangeTransitionStart : function() {
+                    var RADIUS = 64;
+                    var CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+                    if(swiper.realIndex == 0){
+                        $('#reading').text('50')
+                        dashoffset = CIRCUMFERENCE * (1 - (50/100));
+                    } else if(swiper.realIndex == 1){
+                        $('#reading').text('70')
+                        dashoffset = CIRCUMFERENCE * (1 - (70/100));
+                    } else {
+                        $('#reading').text('80')
+                        dashoffset = CIRCUMFERENCE * (1 - (80/100));
+                    }
+                    document.querySelector('.bar').style.strokeDashoffset = dashoffset;
+                    document.querySelector('.bar2').style.strokeDashoffset = dashoffset;
+                    document.querySelector('.bar3').style.strokeDashoffset = dashoffset;
+                },
+            },
+        });
+    </script>
+</body>
+</html>

@@ -1,24 +1,6 @@
 @charset "utf-8";
 /*공통  css */
-@import url(/storg/css/ay_com.css);
-@import url(/storg/css/layout.css);
-@import url(/storg/css/leftmenu.css);
-@import url(/storg/css/content.css);
-@import url(/storg/css/main.css);
-
-@import url(/storg/css/search_box.css);
-@import url(/storg/css/btn.css);
-@import url(/storg/css/table.css);
-@import url(/storg/css/chbox.css);
-@import url(/storg/css/tabcontent.css);
+@import url(/storg/css/base.css);
+/*@import url(/storg/css/content.css);*/
 @import url(/storg/css/style.css);
-
-@import url(/storg/css/popupwindow.css);
-@import url(/storg/css/popup_content.css);
-@import url(/storg/css/datetimepicker.css);
-
-
-/*메인 스케쥴 관리 css */
-@import url(/storg/css/main-calendar.css);
-
-@import url(/storg/css/vendors.css);
+@import url(/storg/css/font.css);

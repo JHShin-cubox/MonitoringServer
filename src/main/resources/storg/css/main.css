@@ -23,14 +23,7 @@
 .main_b .inbox1 .title .more:hover{position: absolute; right: 0px; top: 0px; cursor: pointer; opacity: 1}
 .main_b .inbox1 .gr{width: 100% ; float: left; height: 85%;}
 
-.main_b .inbox5{width: 80%; height: 95vh; border-radius: 10px; background-color: #fff; align-self: start;  box-sizing: border-box; position: relative; left: 50%; transform: translate(-50%,0); margin: 0; padding: 0 60px 40px;
-    overflow: scroll;
-    -ms-overflow-style: none; /* 인터넷 익스플로러 */
-    scrollbar-width: none; /* 파이어폭스 */
-}
-.inbox5::-webkit-scrollbar {
-    display: none; /* 크롬, 사파리, 오페라, 엣지 */
-}
+.main_b .inbox5{width: 80%; height: 95vh; border-radius: 10px; background-color: #fff; align-self: start;  box-sizing: border-box; position: relative; left: 50%; transform: translate(-50%,0); margin: 0; padding: 0 60px 40px;}
 .main_b .inbox5 .title{width: 100% ; float: left;  color: #000; font-size: 36px; margin-bottom: 40px; position: relative; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; text-transform: uppercase ; top: 0px; text-align: center; padding: 50px 0 25px 0; box-sizing: border-box; z-index: 999999 }
 .main_b .inbox5 .title .more{position: absolute; right: 20px; top: 20px; cursor: pointer; opacity: 0.5;transition: all 0.5s;
     -moz-transition: all 0.5s; /* Firefox 4 */
@@ -54,7 +47,7 @@
 
 .main_b .inbox5 .content_info .status .status_wrapper {position: absolute; top: 50%; left: 40%; transform: translate(-50%, -50%); width: 50%;}
 .main_b .inbox5 .content_info .status p {color: #fff; letter-spacing: -0.4px;} 
-.main_b .inbox5 .content_info .status p.status_tittle {font-size: 40px; padding-bottom: 5px; font-weight: 700; font-family: 'system-ui'; letter-spacing: 1.2px; margin-bottom: 0}
+.main_b .inbox5 .content_info .status p.status_tittle {font-size: 40px; padding-bottom: 5px; font-weight: 700; font-family: 'system-ui'; letter-spacing: 1.2px;}
 .main_b .inbox5 .content_info .status p.status_num {font-size: 23px;  font-family: 'monospace'; letter-spacing: -0.2px;}
 .main_b .inbox5 .content_info .status_icon {position: relative; width: 40%;}
 .main_b .inbox5 .content_info .status_icon img {position: absolute; width: 115px; top: 50%; left: 50%; transform: translate(-50%, -50%);}

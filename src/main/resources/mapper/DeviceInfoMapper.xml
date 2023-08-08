@@ -11,12 +11,45 @@
         FROM viewer_info
     </select>
 
+    <select id="getViewerWaitingCount" resultType="java.lang.Integer" >
+        SELECT count(*) FROM viewer_info WHERE status = 'waiting'
+    </select>
+
+    <select id="getViewerReadingCount" resultType="java.lang.Integer" >
+        SELECT count(*) FROM viewer_info WHERE status = 'reading'
+    </select>
+
     <select id="getXrayInfo" resultType="com.monitoringserver.dto.DeviceDTO" >
         SELECT
             id, name, is_on, status, reg_date,
             modified_date, 'xray' as type
         FROM xray_info
     </select>
+
+    <select id="getXrayWaitingCount" resultType="java.lang.Integer" >
+        SELECT count(*) FROM xray_info WHERE status = 'end'
+    </select>
+
+    <select id="getXrayReadingCount" resultType="java.lang.Integer" >
+        SELECT count(*) FROM xray_info WHERE status = 'start'
+    </select>
+
+
+    <select id="getTrsInfo" resultType="com.monitoringserver.dto.DeviceDTO" >
+        SELECT
+            id, name, is_on, status, reg_date,
+            modified_date, 'trs' as type
+        FROM trs_info
+    </select>
+
+    <select id="getTrsWaitingCount" resultType="java.lang.Integer" >
+        SELECT count(*) FROM trs_info WHERE status = 'waiting'
+    </select>
+
+    <select id="getTrsReadingCount" resultType="java.lang.Integer" >
+        SELECT count(*) FROM trs_info WHERE status = 'working'
+    </select>
+
 
     <select id="getHistorySel" resultType="com.monitoringserver.dto.DeviceDTO" >
         SELECT
@@ -28,5 +61,10 @@
                  SELECT id, name , 'xray' as type
                  FROM xray_info
              ) as subquery;
+    </select>
+
+    <select id="getSettings" resultType="com.monitoringserver.dto.SettingDTO">
+        SELECT swiper_speed
+        FROM settings
     </select>
 </mapper>

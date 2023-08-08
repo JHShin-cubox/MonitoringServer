@@ -1,0 +1,36 @@
+:root {
+    --reading_color: #38D29E;
+    --waiting_color: #FDBD7D;
+    --error_color: #E22626;
+    --base_color: #2A2A2A;
+    --sub_color: #5F5F5F;
+    --comment_color: #808080;
+    --monitor_color: #FBFEFE;
+    --main_content_color: #F1F6F6;
+    --amount_color: #979797;
+    --tag_color: #585858;
+    --total_color: #505050;
+
+    --mainfont: "Roboto";
+
+    --monitor_header_font: calc(1.3rem + 1vw);
+    --monitor_tag_font: calc(0.7rem + 0.5vw) ;
+
+    --status_header_font: calc(0.7rem + 1vw);
+    --status_tag_font: calc(0.4rem + 0.5vw);
+
+    --monitor_tittle: calc(0.8rem + 1vw);
+    --monitor_num: calc(0.2rem + 1.3vw);
+
+    --grid_content_font_size: calc(0.6rem + 1.3vw);
+
+    --label_font: calc(0.2rem + 0.7vw);
+
+    --graph_tittle_font: calc(0.3rem + 1vw);
+    --num_font: calc(1rem + 3vw);
+
+    --percentage_font: calc(0.5rem + 0.5vw);
+    --total_font: calc(0.4rem + 1vw);
+    --total_result_font: calc(0.4rem + 0.8vw);
+
+}

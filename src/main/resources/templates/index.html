@@ -6,113 +6,383 @@
     <meta charset="UTF-8">
     <title>통합관리 시스템</title>
     <script>
+        //mqtt 불러오기
         $(function(){
             pcMqtt();
             xrayMqtt();
+            trsMqtt();
         })
     </script>
     <script>
+        //swiper 재생 및 일시정지 기능
         function toggleSwiper(){
-            $('.swiper_toggle').toggleClass("off")
-            if($('.swiper_toggle').hasClass("off")){
-                swiper.autoplay.stop();
-                $('.swiper_toggle').attr('src','/storg/img/play_icon.png');
-            } else {
-                swiper.autoplay.start();
-                $('.swiper_toggle').attr('src','/storg/img/pause_icon.png');
-            }
+            $('.button_wrapper').toggleClass('slide')
+            if($('.button_wrapper').hasClass('slide')) swiper.autoplay.stop();
+            else swiper.autoplay.start();
         }
     </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 </head>
 <body>
     <main layout:fragment="content">
-        <div class="sub_box">
-            <div class="main_b">
-                <div class="inbox5">
-                    <img class="swiper_toggle" src="/storg/img/pause_icon.png" onclick="toggleSwiper(this)">
-                    <div class="swiper mySwiper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <div class="title">Check PC</div>
-                                <ul class="gr gr-viewer">
-                                    <input type="hidden" id="pcCount" th:value="${viewerInfo.size()}">
-                                    <th:block th:if="${viewerInfo.size() != 0}" th:each="statusList : ${viewerInfo}">
-                                        <input th:id="'dashOpenStatus'+${statusList.id}" type="hidden" th:value="${statusList.isOn}">
-                                        <input type="hidden" th:id="'pcStat'+${statusList.id}">
-                                        <li class="d-inline-block">
-                                            <div class="viewer" th:id="'xrayline'+${statusList.id}">
-                                                <div class="content_info" th:classappend="(${statusList.status == 'reading' and statusList.isOn == true} ? 'reading_status' : '' )+(
-                                                   ${statusList.status == 'reading' and statusList.isOn == false} ? 'reading_status dimmed' : '')+(
-                                                   ${statusList.status == 'waiting' and statusList.isOn == true} ? 'waiting_status' : '')+(
-                                                   ${statusList.status == 'waiting' and statusList.isOn == false} ? 'waiting_status dimmed' : '')">
-                                                    <div class="status">
-                                                        <div class="status_wrapper">
-                                                            <p class="status_tittle" th:id="'status'+${statusList.id}">[[${statusList.status}]]</p>
-                                                            <p class="status_num">[[${statusList.name}]]</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="status_icon">
-                                                        <img th:if="${statusList.status == 'reading'}" src="/storg/img/reading_icon.png" alt="">
+        <div class="main_content">
+            <div class="wrapper">
+                <div class="monitor_content content_wrap">
+                    <div class="header monitor_header">
+                        <div class="header_wrap">
+                            <p id="title" class="tittle">Check PC</p>
+                            <p class="tag_tittle">통합관리 시스템</p>
+                        </div>
+                        <div class="button_wrapper">
+                            <label class="switch">
+                                <input type="checkbox" onclick="toggleSwiper()" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="grid_wrapper">
+                        <div class="swiper mySwiper">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <div class="grid gr_checkPc">
+                                        <th:block th:if="${viewerInfo.size() != 0}" th:each="statusList : ${viewerInfo}">
+                                            <div th:value="${statusListStat.index}" th:id="check_div+${statusListStat.index}" th:class="(${statusList.status == 'working' and statusList.isOn == true} ? 'reading check_div' : '' )+(
+                                                           ${statusList.status == 'working' and statusList.isOn == false} ? 'reading dimmed check_div' : '')+(
+                                                           ${statusList.status == 'waiting' and statusList.isOn == true} ? 'waiting check_div' : '')+(
+                                                           ${statusList.status == 'waiting' and statusList.isOn == false} ? 'waiting dimmed check_div' : '')">
+                                                <input type="hidden" th:id="check_status+${statusListStat.index}" th:value="${statusList.status}">
+                                                <div class="content">
+                                                    <div class="content_status">
+                                                        <img th:if="${statusList.status == 'working'}" src="/storg/img/reading_icon.png" alt="">
                                                         <img th:if="${statusList.status == 'waiting'}" src="/storg/img/waiting_icon.png" alt="">
+                                                        <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
                                                     </div>
+                                                    <p th:id="'check'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
                                                 </div>
                                             </div>
-                                        </li>
-                                    </th:block>
-                                    <th:block th:if="${viewerInfo.size() == 0}">
-                                        <div class="noDevice">감지된 Viewer가 없습니다.</div>
-                                    </th:block>
-                                </ul>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="title">X-Ray</div>
-                                <ul class="gr gr-xray">
-                                    <input type="hidden" id="pcCount" th:value="${xrayInfo.size()}">
-                                    <th:block th:if="${xrayInfo.size() != 0}" th:each="statusList : ${xrayInfo}">
-                                        <input th:id="'dashOpenStatus'+${statusList.id}" type="hidden" th:value="${statusList.isOn}">
-                                        <input type="hidden" th:id="'pcStat'+${statusList.id}">
-                                        <li class="d-inline-block">
-                                            <div class="viewer" th:id="'xrayline'+${statusList.id}">
-                                                <div class="content_info" th:classappend="(${statusList.status == 'start' and statusList.isOn == true} ? 'reading_status' : '' )+(
-                                                   ${statusList.status == 'start' and statusList.isOn == false} ? 'reading_status dimmed' : '')+(
-                                                   ${statusList.status == 'end' and statusList.isOn == true} ? 'waiting_status' : '')+(
-                                                   ${statusList.status == 'end' and statusList.isOn == false} ? 'waiting_status dimmed' : '')">
-                                                    <div class="status">
-                                                        <div class="status_wrapper">
-                                                            <p class="status_tittle" th:id="'status'+${statusList.id}">[[${statusList.status}]]</p>
-                                                            <p class="status_num">[[${statusList.name}]]</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="status_icon">
+                                        </th:block>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="grid gr_xray">
+                                        <th:block th:if="${xrayInfo.size() != 0}" th:each="statusList : ${xrayInfo}">
+                                            <div th:value="${statusListStat.index}" th:id="xray_div+${statusListStat.index}" th:class="(${statusList.status == 'start' and statusList.isOn == true} ? 'reading xray_div' : '' )+(
+                                                   ${statusList.status == 'start' and statusList.isOn == false} ? 'reading dimmed xray_div' : '')+(
+                                                   ${statusList.status == 'end' and statusList.isOn == true} ? 'waiting xray_div' : '')+(
+                                                   ${statusList.status == 'end' and statusList.isOn == false} ? 'waiting dimmed xray_div' : '')">
+                                                <input type="hidden" th:id="xray_status+${statusListStat.index}" th:value="${statusList.status}">
+                                                <div class="content">
+                                                    <div class="content_status">
                                                         <img th:if="${statusList.status == 'start'}" src="/storg/img/reading_icon.png" alt="">
                                                         <img th:if="${statusList.status == 'end'}" src="/storg/img/waiting_icon.png" alt="">
+                                                        <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
                                                     </div>
+                                                    <p th:id="'xray'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
                                                 </div>
                                             </div>
-                                        </li>
-                                    </th:block>
-                                    <th:block th:if="${xrayInfo.size() == 0}">
-                                        <div class="noDevice">감지된 Viewer가 없습니다.</div>
-                                    </th:block>
-                                </ul>
+                                        </th:block>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="grid gr_trs">
+                                        <th:block th:if="${trsInfo.size() != 0}" th:each="statusList : ${trsInfo}">
+                                            <div th:value="${statusListStat.index}" th:id="trs_div+${statusListStat.index}" th:class="(${statusList.status == 'working' and statusList.isOn == true} ? 'reading trs_div' : '' )+(
+                                                   ${statusList.status == 'working' and statusList.isOn == false} ? 'reading dimmed trs_div' : '')+(
+                                                   ${statusList.status == 'waiting' and statusList.isOn == true} ? 'waiting trs_div' : '')+(
+                                                   ${statusList.status == 'waiting' and statusList.isOn == false} ? 'waiting dimmed trs_div' : '')">
+                                                <input type="hidden" th:id="trs_status+${statusListStat.index}" th:value="${statusList.status}">
+                                                <div class="content">
+                                                    <div class="content_status">
+                                                        <img th:if="${statusList.status == 'working'}" src="/storg/img/reading_icon.png" alt="">
+                                                        <img th:if="${statusList.status == 'waiting'}" src="/storg/img/waiting_icon.png" alt="">
+                                                        <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
+                                                    </div>
+                                                    <p th:id="'trs'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
+                                                </div>
+                                            </div>
+                                        </th:block>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-                <script>
-                    var swiper = new Swiper(".mySwiper", {
-                        autoplay: {
-                            delay: 2500,
-                            disableOnInteraction: false,
-                        },
-                        loop:true,
-                        speed:2500,
-                    });
-                </script>
+                <div class="status_content content_wrap">
+                    <div class="status_header">
+                        <p class="status_tittle">모니터링 상태</p>
+                        <p class="date">[[${#calendars.format(#calendars.createNow(), 'YY년 MM월 dd일 HH시 mm분 ss초')}]]</p>
+                    </div>
+                    <div class="status_wrapper">
+                        <div class="status">
+                            <div class="label">
+                                <div class="top_line">
+                                    <div class="label_wrapper">
+                                        <div class="reading_label label_color"></div>
+                                        <span id="desc_1st">READING</span>
+                                    </div>
+                                    <div class="label_wrapper">
+                                        <div class="error_label label_color"></div>
+                                        <span>ERROR</span>
+                                    </div>
+                                </div>
+                                <div class="bottom_line">
+                                    <div class="label_wrapper">
+                                        <div class="waiting_label label_color"></div>
+                                        <span id="desc_2nd">WAITING</span>
+                                    </div>
+                                    <div class="label_wrapper">
+                                        <div class="pause_label label_color"></div>
+                                        <span>PAUSE</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="graph reading_graph">
+                                <div class="graph_container">
+                                    <div class="status_variable">
+                                        <p id="status_1st">READING</p>
+                                        <div class="num_wrapper">
+                                            <p id="reading_count_checkPc" class="num" th:value="${viewerReadingCount}">[[${viewerReadingCount}]]</p>
+                                            <p id="reading_count_xray" class="num hidden" th:value="${xrayReadingCount}">[[${xrayReadingCount}]]</p>
+                                            <p id="reading_count_trs" class="num hidden" th:value="${trsReadingCount}">[[${trsReadingCount}]]</p>
+                                            <p class="amount">대</p>
+                                        </div>
+                                    </div>
+                                    <div class="circle_graph">
+                                        <svg class="circle_progress" xmlns="http://www.w3.org/2000/svg" width="calc(1rem + 6vw)" height="calc(1rem + 6vw)" viewBox="0 0 128 128" fill="none">
+                                            <svg width="140" height="140" viewBox="0 0 140 140">
+                                                <circle class="frame" cx="65" cy="65" r="49" stroke-width="20" />
+                                                <circle id="check_pcR" class="bar" cx="65" cy="65" r="49" stroke-width="20" />
+                                            </svg>
+                                            <p id="reading_percent_checkPc" class="percentage" th:value="${viewerReadingPercent}">[[${viewerReadingPercent}]]%</p>
+                                            <p id="reading_percent_xray" class="percentage hidden" th:value="${xrayReadingPercent}">[[${xrayReadingPercent}]]%</p>
+                                            <p id="reading_percent_trs" class="percentage hidden" th:value="${trsReadingPercent}">[[${trsReadingPercent}]]%</p>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="graph waiting_graph">
+                                <div class="graph_container">
+                                    <div class="status_variable">
+                                        <p id="status_2nd">WAITING</p>
+                                        <div class="num_wrapper">
+                                            <p id="waiting_count_checkPc" class="num" th:value="${viewerWaitingCount}">[[${viewerWaitingCount}]]</p>
+                                            <p id="waiting_count_xray" class="num hidden" th:value="${xrayWaitingCount}">[[${xrayWaitingCount}]]</p>
+                                            <p id="waiting_count_trs" class="num hidden" th:value="${trsWaitingCount}">[[${trsWaitingCount}]]</p>
+                                            <p class="amount">대</p>
+                                        </div>
+                                    </div>
+                                    <div class="circle_graph">
+                                        <svg class="circle_progress" xmlns="http://www.w3.org/2000/svg" width="calc(1rem + 6vw)" height="calc(1rem + 6vw)" viewBox="0 0 128 128" fill="none">
+                                            <svg width="140" height="140" viewBox="0 0 140 140">
+                                                <circle class="frame" cx="65" cy="65" r="49" stroke-width="20" />
+                                                <circle id="check_pcW" class="bar2" cx="65" cy="65" r="49" stroke-width="20" />
+                                            </svg>
+                                            <p id="waiting_percent_checkPc" class="percentage" th:value="${viewerWaitingPercent}">[[${viewerWaitingPercent}]]%</p>
+                                            <p id="waiting_percent_xray" class="percentage hidden" th:value="${xrayWaitingPercent}">[[${xrayWaitingPercent}]]%</p>
+                                            <p id="waiting_percent_trs" class="percentage hidden" th:value="${trsWaitingPercent}">[[${trsWaitingPercent}]]%</p>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="graph error_graph">
+                                <div class="graph_container">
+                                    <div class="status_variable">
+                                        <p>ERROR</p>
+                                        <div class="num_wrapper">
+                                            <p class="num">00</p>
+                                            <p class="num hidden"></p>
+                                            <p class="amount">대</p>
+                                        </div>
+                                    </div>
+                                    <div class="circle_graph">
+                                        <svg class="circle_progress" xmlns="http://www.w3.org/2000/svg" width="calc(1rem + 6vw)" height="calc(1rem + 6vw)" viewBox="0 0 128 128" fill="none">
+                                            <svg width="140" height="140" viewBox="0 0 140 140">
+                                                <circle class="frame" cx="65" cy="65" r="49" stroke-width="20" />
+                                                <circle id="check_pcE" class="bar3" cx="65" cy="65" r="49" stroke-width="20" />
+                                            </svg>
+                                            <p class="percentage">0%</p>
+                                            <p class="percentage hidden">0%</p>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="total">
+                                <div class="total_wrapper">
+                                    <p class="tag">Total</p>
+                                    <p id="check_size" class="result">[[${viewerInfo.size()}]]대</p>
+                                    <p id="xray_size" class="result hidden">[[${xrayInfo.size()}]]대</p>
+                                    <p id="trs_size" class="result hidden">[[${trsInfo.size()}]]대</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                let bar =  $('#check_pcR');
+                let bar2 = $('#check_pcW');
+                let bar3 = $('#check_pcE');
+                let value1 = $('#reading_percent_checkPc').attr('value');
+                let value2 = $('#waiting_percent_checkPc').attr('value');
+
+                if(value1=='' || value1 == null){
+                    value1 = 0;
+                }
+                if(value2=='' || value2 == null){
+                    value2 = 0;
+                }
+
+                let RADIUS = 49;
+                let CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+                //처음 퍼센트 원형그래프 그려주는 기능
+                function progress() {
+                    let progress1 = value1 / 100;
+                    let progress2 = value2 / 100;
+                    let progress3 = 0 / 100;
+                    let dashoffset;
+                    dashoffset = CIRCUMFERENCE * (1 - progress1);
+                    bar.css('stroke-dashoffset',dashoffset);
+                    dashoffset = CIRCUMFERENCE * (1 - progress2);
+                    bar2.css('stroke-dashoffset',dashoffset);
+                    dashoffset = CIRCUMFERENCE * (1 - progress3);
+                    bar3.css('stroke-dashoffset',dashoffset);
+                }
+                bar.css('stroke-dasharray',CIRCUMFERENCE);
+                bar2.css('stroke-dasharray',CIRCUMFERENCE);
+                bar3.css('stroke-dasharray',CIRCUMFERENCE);
+                progress();
+            });
+
+            var swiper = new Swiper(".mySwiper", {
+                autoplay: {
+                    delay: /*[[${settings.swiperSpeed}]]*/,
+                    disableOnInteraction: false,
+                },
+                loop:true,
+                speed:2500,
+                on: {
+                    slideChangeTransitionStart : function() {
+                        var RADIUS = 49;
+                        var CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+                        var dashoffset_Reading;
+                        var dashoffset_Waiting;
+                        //각 슬라이드의 기능은 동일
+                        //기존 상태값과 장비수를 숨기고 각 슬라이드의 장비의 상태값과 장비수를 표츌
+                        //조건문 마다 슬라이드 번호
+                        if(swiper.realIndex == 0){
+                            $('#waiting_count_checkPc').show();
+                            $('#waiting_count_xray').hide();
+                            $('#waiting_count_trs').hide();
+
+                            $('#reading_count_checkPc').show();
+                            $('#reading_count_xray').hide();
+                            $('#reading_count_trs').hide();
+
+                            $('#waiting_percent_checkPc').show();
+                            $('#waiting_percent_xray').hide();
+                            $('#waiting_percent_trs').hide();
+
+                            $('#reading_percent_checkPc').show();
+                            $('#reading_percent_xray').hide();
+                            $('#reading_percent_trs').hide();
+
+                            $('#check_size').show();
+                            $('#xray_size').hide();
+                            $('#trs_size').hide();
+
+                            $('.bar').attr('id','check_pcR')
+                            $('.bar2').attr('id','check_pcW')
+                            dashoffset_Reading = CIRCUMFERENCE * (1 - (Number($('#reading_percent_checkPc').attr('value'))/100));
+                            dashoffset_Waiting = CIRCUMFERENCE * (1 - (Number($('#waiting_percent_checkPc').attr('value'))/100));
+                            $('#check_pcR').css('stroke-dashoffset',dashoffset_Reading);
+                            $('#check_pcW').css('stroke-dashoffset',dashoffset_Waiting);
+
+                            $('#title').text('Check PC');
+                            $('#status_1st').text('READING');
+                            $('#status_2nd').text('WAITING');
+                            $('#desc_1st').text('READING');
+                            $('#desc_2nd').text('WAITING');
+                            $('.grid_wrapper').scrollTop(0);
+                        }else if(swiper.realIndex == 1){
+                            $('#waiting_count_checkPc').hide();
+                            $('#waiting_count_xray').show();
+                            $('#waiting_count_trs').hide();
+
+                            $('#reading_count_checkPc').hide();
+                            $('#reading_count_xray').show();
+                            $('#reading_count_trs').hide();
+
+                            $('#waiting_percent_checkPc').hide();
+                            $('#waiting_percent_xray').show();
+                            $('#waiting_percent_trs').hide();
+
+                            $('#reading_percent_checkPc').hide();
+                            $('#reading_percent_xray').show();
+                            $('#reading_percent_trs').hide();
+
+                            $('#check_size').hide();
+                            $('#xray_size').show();
+                            $('#trs_size').hide();
+
+                            $('.bar').attr('id','xrayR')
+                            $('.bar2').attr('id','xrayW')
+                            dashoffset_Reading = CIRCUMFERENCE * (1 - (Number($('#reading_percent_xray').attr('value'))/100));
+                            dashoffset_Waiting = CIRCUMFERENCE * (1 - (Number($('#waiting_percent_xray').attr('value'))/100));
+                            $('#xrayR').css('stroke-dashoffset',dashoffset_Reading);
+                            $('#xrayW').css('stroke-dashoffset',dashoffset_Waiting);
+
+                            $('#title').text('X-Ray');
+                            $('#status_1st').text('START');
+                            $('#status_2nd').text('END');
+                            $('#desc_1st').text('START');
+                            $('#desc_2nd').text('END');
+                            $('.grid_wrapper').scrollTop(0);
+                        //세번째 슬라이드 일때 작동하는 기능
+                        } else{
+                            $('#waiting_count_checkPc').hide();
+                            $('#waiting_count_xray').hide();
+                            $('#waiting_count_trs').show();
+
+                            $('#reading_count_checkPc').hide();
+                            $('#reading_count_xray').hide();
+                            $('#reading_count_trs').show();
+
+                            $('#waiting_percent_checkPc').hide();
+                            $('#waiting_percent_xray').hide();
+                            $('#waiting_percent_trs').show();
+
+                            $('#reading_percent_checkPc').hide();
+                            $('#reading_percent_xray').hide();
+                            $('#reading_percent_trs').show();
+
+                            $('#check_size').hide();
+                            $('#xray_size').hide();
+                            $('#trs_size').show();
+
+                            $('.bar').attr('id','trsR')
+                            $('.bar2').attr('id','trsW')
+                            dashoffset_Reading = CIRCUMFERENCE * (1 - (Number($('#reading_percent_trs').attr('value'))/100));
+                            dashoffset_Waiting = CIRCUMFERENCE * (1 - (Number($('#waiting_percent_trs').attr('value'))/100));
+                            $('#trsR').css('stroke-dashoffset',dashoffset_Reading);
+                            $('#trsW').css('stroke-dashoffset',dashoffset_Waiting);
+                            $('#title').text('TRS');
+                            $('#status_1st').text('WORKING');
+                            $('#status_2nd').text('WAITING');
+                            $('#desc_1st').text('WORKING');
+                            $('#desc_2nd').text('WAITING');
+                            $('.grid_wrapper').scrollTop(0);
+                        }
+                    },
+                },
+            });
+        </script>
     </main>
 </body>
 </html>

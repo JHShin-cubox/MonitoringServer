@@ -18,7 +18,8 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:mariadb://pdteam-dev-db.cvl9xeh1bwxz.ap-northeast-2.rds.amazonaws.com:3306/divisionserver
+#    url: jdbc:mariadb://pdteam-dev-db.cvl9xeh1bwxz.ap-northeast-2.rds.amazonaws.com:3306/divisionserver
+    url : jdbc:mariadb://172.16.150.34:3306/divisionserver
     driver-class-name: org.mariadb.jdbc.Driver
     username: admin
     password: cubox2022!

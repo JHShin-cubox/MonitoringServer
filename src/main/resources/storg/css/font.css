@@ -1,0 +1,66 @@
+@charset "utf-8";
+
+/**** 공통소스 ****/
+@-ms-viewport {
+  width: device-width;
+}
+
+@font-face {
+    font-family:'Roboto';
+    font-weight:300;
+    font-style: normal;
+    src: url('/storg/font/Roboto-Thin.ttf') format('truetype')
+}
+
+@font-face {
+    font-family:'Roboto';
+    font-weight:500;
+    font-style: normal;
+    src: url('/storg/font/Roboto-Regular.ttf') format('truetype')
+}
+
+@font-face {
+    font-family:'Roboto';
+    font-weight:600;
+    font-style: normal;
+    src: url('/storg/font/Roboto-Medium.ttf') format('truetype')
+}
+
+@font-face {
+    font-family:'Roboto';
+    font-weight:700;
+    font-style: normal;
+    src: url('/storg/font/Roboto-Bold.ttf') format('truetype')
+}
+
+@font-face {
+    font-family:'NanumSquare';
+    font-weight:300;
+    font-style: normal;
+    src: url('/storg/font/NanumSquareL.eot');
+    src: url('/storg/font/NanumSquareL.eot?#iefix') format('embedded-opentype'),
+         url('/storg/font/NanumSquareL.woff') format('woff'),
+         url('/storg/font/NanumSquareL.ttf') format('truetype')
+}
+
+
+@font-face {
+    font-family:'NanumSquare';
+    font-weight:400;
+    font-style: normal;
+    src: url('/storg/font/NanumSquareR.eot');
+    src: url('/storg/font/NanumSquareR.eot?#iefix') format('embedded-opentype'),
+         url('/storg/font/NanumSquareR.woff') format('woff'),
+         url('/storg/font/NanumSquareR.ttf') format('truetype')
+}
+
+
+@font-face {
+    font-family:'NanumSquare';
+    font-weight:700;
+    font-style: normal;
+    src: url('/storg/font/NanumSquareB.eot');
+    src: url('/storg/font/NanumSquareB.eot?#iefix') format('embedded-opentype'),
+         url('/storg/font/NanumSquareB.woff') format('woff'),
+         url('/storg/font/NanumSquareB.ttf') format('truetype')
+}
