@@ -56,7 +56,7 @@ function pcMqtt() {
 
             if(jsonData.data[i].pcStatus != $('#check_status'+i).val()){
                 $('#check_status'+i).val(jsonData.data[i].pcStatus);
-                if(jsonData.data[i].pcStatus == 'waiteing'){
+                if(jsonData.data[i].pcStatus == 'waiting'){
                     if($('#check_div'+i).hasClass('reading')){
                         $('#check_div'+i).removeClass('reading');
                         $('#check_div'+i).addClass('waiting');

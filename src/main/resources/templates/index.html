@@ -35,7 +35,7 @@
                         </div>
                         <div class="button_wrapper">
                             <label class="switch">
-                                <input type="checkbox" onclick="toggleSwiper()" checked>
+                                <input id="toggleSwiper" type="checkbox" onclick="toggleSwiper()" checked>
                                 <span class="slider round"></span>
                             </label>
                         </div>
@@ -382,6 +382,24 @@
                     },
                 },
             });
+        </script>
+        <script>
+            $(function(){
+                $(document).keydown(function(e) {
+                    switch(e.which) {
+                        case 32: // 스페이스바
+                            $('#toggleSwiper').click();
+                            break;
+                        case 37: // 왼쪽 방향키
+                            swiper.slidePrev();
+                            break;
+                        case 39: // 오른쪽 방향키
+                            swiper.slideNext();
+                            break;
+                    }
+                });
+            })
+
         </script>
     </main>
 </body>

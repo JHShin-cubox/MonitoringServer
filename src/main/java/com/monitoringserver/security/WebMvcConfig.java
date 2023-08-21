@@ -17,7 +17,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://172.16.150.34") // 허용하려는 IP 주소
+                .allowedOrigins("http://172.16.150.32",
+                        "http://172.16.150.34",
+                        "http://x-ray.cuboxservice.com/") // 허용하려는 IP 주소
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(true)
