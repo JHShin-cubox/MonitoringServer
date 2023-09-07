@@ -21,7 +21,6 @@
             else swiper.autoplay.start();
         }
     </script>
-    <link rel="stylesheet" href="/storg/css/swiper-bundle.css" />
 </head>
 <body>
     <main layout:fragment="content">
@@ -33,75 +32,114 @@
                             <p id="title" class="tittle">Check PC</p>
                             <p class="tag_tittle">통합관리 시스템</p>
                         </div>
-                        <div class="button_wrapper">
-                            <label class="switch">
-                                <input id="toggleSwiper" type="checkbox" onclick="toggleSwiper()" checked>
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
                     </div>
-                    <div class="grid_wrapper">
-                        <div class="swiper mySwiper">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide">
-                                    <div class="grid gr_checkPc">
-                                        <th:block th:if="${viewerInfo.size() != 0}" th:each="statusList : ${viewerInfo}">
-                                            <div th:value="${statusListStat.index}" th:id="check_div+${statusListStat.index}" th:class="(${statusList.status == 'working' and statusList.isOn == true} ? 'reading check_div' : '' )+(
-                                                           ${statusList.status == 'working' and statusList.isOn == false} ? 'reading dimmed check_div' : '')+(
-                                                           ${statusList.status == 'waiting' and statusList.isOn == true} ? 'waiting check_div' : '')+(
-                                                           ${statusList.status == 'waiting' and statusList.isOn == false} ? 'waiting dimmed check_div' : '')">
-                                                <input type="hidden" th:id="check_status+${statusListStat.index}" th:value="${statusList.status}">
-                                                <div class="content">
-                                                    <div class="content_status">
-                                                        <img th:if="${statusList.status == 'working'}" src="/storg/img/reading_icon.png" alt="">
-                                                        <img th:if="${statusList.status == 'waiting'}" src="/storg/img/waiting_icon.png" alt="">
-                                                        <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
+                    <div class="swiper_display">
+                        <div class="swiper_frame">
+                            <div class="grid_wrapper">
+                                <div class="grid gr_checkPc">
+                                    <th:block th:if="${viewerInfo.size() != 0}" th:each="statusList : ${viewerInfo}">
+                                        <div th:value="${statusListStat.index}" th:id="check_div+${statusListStat.index}" th:class="(${statusList.status == 'working' and statusList.power == true} ? 'reading check_div' : '' )+(
+                                                       ${statusList.status == 'working' and statusList.power == false} ? 'reading dimmed check_div' : '')+(
+                                                       ${statusList.status == 'waiting' and statusList.power == true} ? 'waiting check_div' : '')+(
+                                                       ${statusList.status == 'waiting' and statusList.power == false} ? 'waiting dimmed check_div' : '')">
+                                            <input type="hidden" th:id="check_status+${statusListStat.index}" th:value="${statusList.status}">
+                                            <div class="content">
+                                                <div class="left_contents">
+                                                    <div class="content_placement">
+                                                        <div>
+                                                            <div class="state_info">
+                                                                <img src="/storg/img/reading_icon.png" alt="">
+                                                                <p>Reading</p>
+                                                            </div>
+                                                            <div class="num">
+                                                                <p class="reg_num">00.000.001</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="bottom_info">
+                                                            <p class="time_tag">평균 판독 시간</p>
+                                                            <p class="time">01h 23m 01s</p>
+                                                        </div>
                                                     </div>
-                                                    <p th:id="'check'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
+                                                </div>
+                                                <div class="right_content">
+                                                    <div>
+                                                        <div class="content_placement">
+                                                            <div class="right_content_wrapper">
+                                                                <div class="monitor_info ">
+                                                                    <p  class="name_tag">통과수하물</p>
+                                                                    <div class="bar">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69 10" fill="none">
+                                                                            <rect width="69" height="10" rx="5" fill="black" fill-opacity="0.18"/>
+
+<!--                                                                            <rect th:if="${}" width="27.6" height="10" rx="5" fill="#30F4B3"/>-->
+<!--                                                                            <rect th:if="${}" width="27.6" height="10" rx="5" fill="#FFD466"/>-->
+                                                                            <rect width="27.6" height="10" rx="5" fill="#FF4219"/>
+                                                                        </svg>
+                                                                    </div>
+                                                                    <p class="num_tag">06</p>
+                                                                </div>
+                                                                <div class="monitor_info">
+                                                                    <p class="name_tag">개봉수하물</p>
+                                                                    <div class="bar">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 69 10" fill="none">
+                                                                            <rect width="69" height="10" rx="5" fill="black" fill-opacity="0.18"/>
+<!--                                                                            <rect width="53.13" height="10" rx="5" fill="#30F4B3"/>-->
+<!--                                                                            <rect width="53.13" height="10" rx="5" fill="#FFD466"/>-->
+                                                                            <rect width="53.13" height="10" rx="5" fill="#FF4219"/>
+                                                                        </svg>
+                                                                    </div>
+                                                                    <p class="num_tag">04</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="right_content_wrapper_total">
+                                                                <div class="monitor_info monitor_total_info">
+                                                                    <p class="name_tag">수하물 처리량</p>
+                                                                    <div class="bar"></div>
+                                                                    <p class="num_tag">14</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </th:block>
-                                    </div>
+                                        </div>
+                                    </th:block>
                                 </div>
-                                <div class="swiper-slide">
-                                    <div class="grid gr_xray">
-                                        <th:block th:if="${xrayInfo.size() != 0}" th:each="statusList : ${xrayInfo}">
-                                            <div th:value="${statusListStat.index}" th:id="xray_div+${statusListStat.index}" th:class="(${statusList.status == 'start' and statusList.isOn == true} ? 'reading xray_div' : '' )+(
-                                                   ${statusList.status == 'start' and statusList.isOn == false} ? 'reading dimmed xray_div' : '')+(
-                                                   ${statusList.status == 'end' and statusList.isOn == true} ? 'waiting xray_div' : '')+(
-                                                   ${statusList.status == 'end' and statusList.isOn == false} ? 'waiting dimmed xray_div' : '')">
-                                                <input type="hidden" th:id="xray_status+${statusListStat.index}" th:value="${statusList.status}">
-                                                <div class="content">
-                                                    <div class="content_status">
-                                                        <img th:if="${statusList.status == 'start'}" src="/storg/img/reading_icon.png" alt="">
-                                                        <img th:if="${statusList.status == 'end'}" src="/storg/img/waiting_icon.png" alt="">
-                                                        <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
-                                                    </div>
-                                                    <p th:id="'xray'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
+                                <div class="grid gr_xray">
+                                    <th:block th:if="${xrayInfo.size() != 0}" th:each="statusList : ${xrayInfo}">
+                                        <div th:value="${statusListStat.index}" th:id="xray_div+${statusListStat.index}" th:class="(${statusList.status == 'start' and statusList.power == true} ? 'reading xray_div' : '' )+(
+                                               ${statusList.status == 'start' and statusList.power == false} ? 'reading dimmed xray_div' : '')+(
+                                               ${statusList.status == 'end' and statusList.power == true} ? 'waiting xray_div' : '')+(
+                                               ${statusList.status == 'end' and statusList.power == false} ? 'waiting dimmed xray_div' : '')">
+                                            <input type="hidden" th:id="xray_status+${statusListStat.index}" th:value="${statusList.status}">
+                                            <div class="content">
+                                                <div class="content_status">
+                                                    <img th:if="${statusList.status == 'start'}" src="/storg/img/reading_icon.png" alt="">
+                                                    <img th:if="${statusList.status == 'end'}" src="/storg/img/waiting_icon.png" alt="">
+                                                    <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
                                                 </div>
+                                                <p th:id="'xray'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
                                             </div>
-                                        </th:block>
-                                    </div>
+                                        </div>
+                                    </th:block>
                                 </div>
-                                <div class="swiper-slide">
-                                    <div class="grid gr_trs">
-                                        <th:block th:if="${trsInfo.size() != 0}" th:each="statusList : ${trsInfo}">
-                                            <div th:value="${statusListStat.index}" th:id="trs_div+${statusListStat.index}" th:class="(${statusList.status == 'working' and statusList.isOn == true} ? 'reading trs_div' : '' )+(
-                                                   ${statusList.status == 'working' and statusList.isOn == false} ? 'reading dimmed trs_div' : '')+(
-                                                   ${statusList.status == 'waiting' and statusList.isOn == true} ? 'waiting trs_div' : '')+(
-                                                   ${statusList.status == 'waiting' and statusList.isOn == false} ? 'waiting dimmed trs_div' : '')">
-                                                <input type="hidden" th:id="trs_status+${statusListStat.index}" th:value="${statusList.status}">
-                                                <div class="content">
-                                                    <div class="content_status">
-                                                        <img th:if="${statusList.status == 'working'}" src="/storg/img/reading_icon.png" alt="">
-                                                        <img th:if="${statusList.status == 'waiting'}" src="/storg/img/waiting_icon.png" alt="">
-                                                        <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
-                                                    </div>
-                                                    <p th:id="'trs'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
+                                <div class="grid gr_trs">
+                                    <th:block th:if="${trsInfo.size() != 0}" th:each="statusList : ${trsInfo}">
+                                        <div th:value="${statusListStat.index}" th:id="trs_div+${statusListStat.index}" th:class="(${statusList.status == 'working' and statusList.power == true} ? 'reading trs_div' : '' )+(
+                                               ${statusList.status == 'working' and statusList.power == false} ? 'reading dimmed trs_div' : '')+(
+                                               ${statusList.status == 'waiting' and statusList.power == true} ? 'waiting trs_div' : '')+(
+                                               ${statusList.status == 'waiting' and statusList.power == false} ? 'waiting dimmed trs_div' : '')">
+                                            <input type="hidden" th:id="trs_status+${statusListStat.index}" th:value="${statusList.status}">
+                                            <div class="content">
+                                                <div class="content_status">
+                                                    <img th:if="${statusList.status == 'working'}" src="/storg/img/reading_icon.png" alt="">
+                                                    <img th:if="${statusList.status == 'waiting'}" src="/storg/img/waiting_icon.png" alt="">
+                                                    <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
                                                 </div>
+                                                <p th:id="'trs'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
                                             </div>
-                                        </th:block>
-                                    </div>
+                                        </div>
+                                    </th:block>
                                 </div>
                             </div>
                         </div>
@@ -223,7 +261,6 @@
             </div>
         </div>
 
-        <script src="/storg/js/swiper-bundle.js"></script>
         <script th:inline="javascript">
             document.addEventListener('DOMContentLoaded', function() {
                 let bar =  $('#check_pcR');

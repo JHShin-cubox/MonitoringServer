@@ -6,48 +6,51 @@
 
     <select id="getViewerInfo" resultType="com.monitoringserver.dto.DeviceDTO" >
         SELECT
-            id, name, is_on, status, reg_date,
+            id, name, power, status, reg_date,
             modified_date, 'viewer' as type
-        FROM viewer_info
+        FROM device
+        WHERE type = 'C'
     </select>
 
     <select id="getViewerWaitingCount" resultType="java.lang.Integer" >
-        SELECT count(*) FROM viewer_info WHERE status = 'waiting'
+        SELECT count(*) FROM device WHERE status = 'waiting' AND type = 'C'
     </select>
 
     <select id="getViewerReadingCount" resultType="java.lang.Integer" >
-        SELECT count(*) FROM viewer_info WHERE status = 'reading'
+        SELECT count(*) FROM device WHERE status = 'working' AND type = 'C'
     </select>
 
     <select id="getXrayInfo" resultType="com.monitoringserver.dto.DeviceDTO" >
         SELECT
-            id, name, is_on, status, reg_date,
+            id, name, power, status, reg_date,
             modified_date, 'xray' as type
-        FROM xray_info
+        FROM device
+        WHERE type = 'X'
     </select>
 
     <select id="getXrayWaitingCount" resultType="java.lang.Integer" >
-        SELECT count(*) FROM xray_info WHERE status = 'end'
+        SELECT count(*) FROM device WHERE status = 'waiting' AND type = 'X'
     </select>
 
     <select id="getXrayReadingCount" resultType="java.lang.Integer" >
-        SELECT count(*) FROM xray_info WHERE status = 'start'
+        SELECT count(*) FROM device WHERE status = 'working' AND type = 'X'
     </select>
 
 
     <select id="getTrsInfo" resultType="com.monitoringserver.dto.DeviceDTO" >
         SELECT
-            id, name, is_on, status, reg_date,
+            id, name, power, status, reg_date,
             modified_date, 'trs' as type
-        FROM trs_info
+        FROM device
+        WHERE type = 'T'
     </select>
 
     <select id="getTrsWaitingCount" resultType="java.lang.Integer" >
-        SELECT count(*) FROM trs_info WHERE status = 'waiting'
+        SELECT count(*) FROM device WHERE status = 'waiting' AND type = 'T'
     </select>
 
     <select id="getTrsReadingCount" resultType="java.lang.Integer" >
-        SELECT count(*) FROM trs_info WHERE status = 'working'
+        SELECT count(*) FROM device WHERE status = 'working' AND type = 'T'
     </select>
 
 

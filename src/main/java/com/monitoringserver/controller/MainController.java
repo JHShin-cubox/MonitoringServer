@@ -99,7 +99,7 @@ public class MainController {
         model.addAttribute("settings", deviceInfoService.getSettings());
 
         System.out.println(deviceInfoService.getXrayInfo());
-        return "index";
+        return "index_ori";
     }
 
     @GetMapping(value = "/2")

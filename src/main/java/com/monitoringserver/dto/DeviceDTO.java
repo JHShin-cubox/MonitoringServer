@@ -14,7 +14,7 @@ import java.util.Date;
 public class DeviceDTO {
     private Long id;
     private String name;
-    private Boolean isOn;
+    private Boolean power;
     private String status;
     private Date reg_date;
     private Date modified_date;

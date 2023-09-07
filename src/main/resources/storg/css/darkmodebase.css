@@ -1,25 +1,26 @@
 :root {
-    --reading_color: #10c588;
-    --waiting_color: #F9AB5D;
-    --error_color: #D72A2A;
+    --reading_color: #2EF0AE;
+    --waiting_color: #FFC044;
+    --error_color: #FF3030;
     --reading_sub_color: rgba(20, 100, 73, 0.15);
     --waiting_sub_color: rgb(238 168 97 / 50%);
     --error_sub_color: rgba(166, 13, 13, 0.33);
-    --base_color: #2A2A2A;
-    --sub_color: #5F5F5F;
-    --comment_color: #808080;
-    --monitor_color: #FBFEFE;
-    --main_content_color: #F1F6F6;
+    --base_color: #fff;
+    --sub_color: #DADADA;
+    --comment_color: #DADADA;
+    --monitor_color: #fff;
+    --monitor_background_color: rgba(39, 40, 41, 1);
+    --main_content_color: #464646;;
     --amount_color: #979797;
-    --tag_color: #585858;
-    --total_color: #505050;
+    --tag_color: #FFFFFF;
+    --total_color: #EEEEEE;
 
     --mainfont: "Roboto";
 
-    --monitor_header_font: calc(1.3rem + 1vw);
+    --monitor_header_font: calc(1.3rem + 1vw); 
     --monitor_tag_font: calc(0.6rem + 0.5vw) ;
 
-    --status_header_font: calc(0.7rem + 1vw);
+    --status_header_font: calc(0.7rem + 1vw); 
     --status_tag_font: calc(0.6rem + 0.4vw);
 
     --monitor_tittle: calc(0.8rem + 1vw);

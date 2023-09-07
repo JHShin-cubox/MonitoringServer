@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>통합관리 시스템</title>
+    <script>
+        //mqtt 불러오기
+        $(function(){
+            pcMqtt();
+            xrayMqtt();
+            trsMqtt();
+        })
+    </script>
+    <script>
+        //swiper 재생 및 일시정지 기능
+        function toggleSwiper(){
+            $('.button_wrapper').toggleClass('slide')
+            if($('.button_wrapper').hasClass('slide')) swiper.autoplay.stop();
+            else swiper.autoplay.start();
+        }
+    </script>
+    <link rel="stylesheet" href="/storg/css/swiper-bundle.css" />
+</head>
+<body>
+    <main layout:fragment="content">
+        <div class="main_content">
+            <div class="wrapper">
+                <div class="monitor_content content_wrap">
+                    <div class="header monitor_header">
+                        <div class="header_wrap">
+                            <p id="title" class="tittle">Check PC</p>
+                            <p class="tag_tittle">통합관리 시스템</p>
+                        </div>
+                        <div class="button_wrapper">
+                            <label class="switch">
+                                <input id="toggleSwiper" type="checkbox" onclick="toggleSwiper()" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="grid_wrapper">
+                        <div class="swiper mySwiper">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <div class="grid gr_checkPc">
+                                        <th:block th:if="${viewerInfo.size() != 0}" th:each="statusList : ${viewerInfo}">
+                                            <div th:value="${statusListStat.index}" th:id="check_div+${statusListStat.index}" th:class="(${statusList.status == 'working' and statusList.power == true} ? 'reading check_div' : '' )+(
+                                                           ${statusList.status == 'working' and statusList.power == false} ? 'reading dimmed check_div' : '')+(
+                                                           ${statusList.status == 'waiting' and statusList.power == true} ? 'waiting check_div' : '')+(
+                                                           ${statusList.status == 'waiting' and statusList.power == false} ? 'waiting dimmed check_div' : '')">
+                                                <input type="hidden" th:id="check_status+${statusListStat.index}" th:value="${statusList.status}">
+                                                <div class="content">
+                                                    <div class="left_contents">
+                                                        <div class="content_placement">
+                                                            <div>
+                                                                <div th:id="check_state_info+${statusListStat.index}" class="state_info">
+                                                                    <img th:if="${statusList.status == 'working'}" src="/storg/img/reading_icon.png" alt="">
+                                                                    <img th:if="${statusList.status == 'waiting'}" src="/storg/img/waiting_icon.png" alt="">
+                                                                    <img th:if="${statusList.status == 'error'}" src="/storg/img/error_icon.png" alt="">
+                                                                    <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
+                                                                </div>
+                                                                <div class="num">
+                                                                    <p th:id="'check'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="bottom_info">
+                                                                <p class="time_tag">평균 판독 시간</p>
+                                                                <p class="time">01h 23m 01s</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="right_content">
+                                                        <div>
+                                                            <div class="content_placement">
+                                                                <div class="right_content_wrapper">
+                                                                    <div class="monitor_info ">
+                                                                        <p  class="name_tag">통과수하물</p>
+                                                                        <div class="bar">
+                                                                            <progress th:if="${statusList.status == 'working'}" class="progress workingP" min="0" max="100" value="30"></progress>
+                                                                            <progress th:if="${statusList.status == 'waiting'}" class="progress waitingP" min="0" max="100" value="30"></progress>
+                                                                        </div>
+                                                                        <p class="num_tag">06</p>
+                                                                    </div>
+                                                                    <div class="monitor_info">
+                                                                        <p class="name_tag">개봉수하물</p>
+                                                                        <div class="bar">
+                                                                            <progress th:if="${statusList.status == 'working'}" class="progress workingP" min="0" max="100" value="30"></progress>
+                                                                            <progress th:if="${statusList.status == 'waiting'}" class="progress waitingP" min="0" max="100" value="30"></progress>
+                                                                        </div>
+                                                                        <p class="num_tag">04</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="right_content_wrapper_total">
+                                                                    <div class="monitor_info monitor_total_info">
+                                                                        <p class="name_tag">전체수하물</p>
+                                                                        <div class="bar"></div>
+                                                                        <p class="num_tag">14</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </th:block>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="grid gr_xray">
+                                        <th:block th:if="${xrayInfo.size() != 0}" th:each="statusList : ${xrayInfo}">
+                                            <div th:value="${statusListStat.index}" th:id="xray_div+${statusListStat.index}" th:class="(${statusList.status == 'working' and statusList.power == true} ? 'reading xray_div' : '' )+(
+                                                   ${statusList.status == 'working' and statusList.power == false} ? 'reading dimmed xray_div' : '')+(
+                                                   ${statusList.status == 'waiting' and statusList.power == true} ? 'waiting xray_div' : '')+(
+                                                   ${statusList.status == 'waiting' and statusList.power == false} ? 'waiting dimmed xray_div' : '')">
+                                                <input type="hidden" th:id="xray_status+${statusListStat.index}" th:value="${statusList.status}">
+                                                <div class="content">
+                                                    <div class="left_contents">
+                                                        <div class="content_placement">
+                                                            <div>
+                                                                <div th:id="xray_state_info+${statusListStat.index}" class="state_info">
+                                                                    <img th:if="${statusList.status == 'working'}" src="/storg/img/reading_icon.png" alt="">
+                                                                    <img th:if="${statusList.status == 'waiting'}" src="/storg/img/waiting_icon.png" alt="">
+                                                                    <img th:if="${statusList.status == 'error'}" src="/storg/img/error_icon.png" alt="">
+                                                                    <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
+                                                                </div>
+                                                                <div class="num">
+                                                                    <p th:id="'xray'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="bottom_info xray_bottom">
+                                                                <p class="time_tag xray_none">평균 판독 시간</p>
+                                                                <p class="time xray_none">01h 23m 01s</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="right_content">
+                                                        <div>
+                                                            <div class="content_placement">
+                                                                <div class="right_content_wrapper">
+                                                                    <div class="monitor_info xray_none">
+                                                                        <p  class="name_tag">통과수하물</p>
+                                                                        <div class="bar">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69 10" fill="none">
+                                                                                <rect width="69" height="10" rx="5" fill="black" fill-opacity="0.18"/>
+                                                                                <rect th:if="${statusList.status == 'working'}" width="27.6" height="10" rx="5" fill="#30F4B3"/>
+                                                                                <rect th:if="${statusList.status == 'waiting'}" width="27.6" height="10" rx="5" fill="#FFD466"/>
+                                                                                <rect th:if="${statusList.status == 'error'}" width="27.6" height="10" rx="5" fill="#FF4219"/>
+                                                                            </svg>
+                                                                        </div>
+                                                                        <p class="num_tag">06</p>
+                                                                    </div>
+                                                                    <div class="monitor_info xray_none">
+                                                                        <p class="name_tag">개봉수하물</p>
+                                                                        <div class="bar">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69 10" fill="none">
+                                                                                <rect width="69" height="10" rx="5" fill="black" fill-opacity="0.18"/>
+                                                                                <rect th:if="${statusList.status == 'working'}" width="53.13" height="10" rx="5" fill="#30F4B3"/>
+                                                                                <rect th:if="${statusList.status == 'waiting'}" width="53.13" height="10" rx="5" fill="#FFD466"/>/
+                                                                                <rect th:if="${statusList.status == 'error'}" width="53.13" height="10" rx="5" fill="#FF4219"/>
+                                                                            </svg>
+                                                                        </div>
+                                                                        <p class="num_tag">04</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="right_content_wrapper_total">
+                                                                    <div class="monitor_info monitor_total_info">
+                                                                        <p class="name_tag">전체수하물</p>
+                                                                        <div class="bar"></div>
+                                                                        <p class="num_tag">14</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </th:block>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="grid gr_trs">
+                                        <th:block th:if="${trsInfo.size() != 0}" th:each="statusList : ${trsInfo}">
+                                            <div th:value="${statusListStat.index}" th:id="trs_div+${statusListStat.index}" th:class="(${statusList.status == 'working' and statusList.power == true} ? 'reading trs_div' : '' )+(
+                                                   ${statusList.status == 'working' and statusList.power == false} ? 'reading dimmed trs_div' : '')+(
+                                                   ${statusList.status == 'waiting' and statusList.power == true} ? 'waiting trs_div' : '')+(
+                                                   ${statusList.status == 'waiting' and statusList.power == false} ? 'waiting dimmed trs_div' : '')">
+                                                <input type="hidden" th:id="trs_status+${statusListStat.index}" th:value="${statusList.status}">
+                                                <div class="content">
+                                                    <div class="left_contents">
+                                                        <div class="content_placement">
+                                                            <div>
+                                                                <div th:id="trs_state_info+${statusListStat.index}" class="state_info">
+                                                                    <img th:if="${statusList.status == 'working'}" src="/storg/img/reading_icon.png" alt="">
+                                                                    <img th:if="${statusList.status == 'waiting'}" src="/storg/img/waiting_icon.png" alt="">
+                                                                    <img th:if="${statusList.status == 'error'}" src="/storg/img/error_icon.png" alt="">
+                                                                    <p>[[${#strings.toUpperCase(statusList.status)}]]</p>
+                                                                </div>
+                                                                <div class="num">
+                                                                    <p th:id="'trs'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="bottom_info xray_bottom">
+                                                                <p class="time_tag xray_none">평균 판독 시간</p>
+                                                                <p class="time xray_none">01h 23m 01s</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="right_content">
+                                                        <div>
+                                                            <div class="content_placement">
+                                                                <div class="right_content_wrapper">
+                                                                    <div class="monitor_info xray_none">
+                                                                        <p  class="name_tag">통과수하물</p>
+                                                                        <div class="bar">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69 10" fill="none">
+                                                                                <rect width="69" height="10" rx="5" fill="black" fill-opacity="0.18"/>
+                                                                                <rect th:if="${statusList.status == 'working'}" width="27.6" height="10" rx="5" fill="#30F4B3"/>
+                                                                                <rect th:if="${statusList.status == 'waiting'}" width="27.6" height="10" rx="5" fill="#FFD466"/>
+                                                                                <rect th:if="${statusList.status == 'error'}" width="27.6" height="10" rx="5" fill="#FF4219"/>
+                                                                            </svg>
+                                                                        </div>
+                                                                        <p class="num_tag">06</p>
+                                                                    </div>
+                                                                    <div class="monitor_info xray_none">
+                                                                        <p class="name_tag">개봉수하물</p>
+                                                                        <div class="bar">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69 10" fill="none">
+                                                                                <rect width="69" height="10" rx="5" fill="black" fill-opacity="0.18"/>
+                                                                                <rect th:if="${statusList.status == 'working'}" width="53.13" height="10" rx="5" fill="#30F4B3"/>
+                                                                                <rect th:if="${statusList.status == 'waiting'}" width="53.13" height="10" rx="5" fill="#FFD466"/>/
+                                                                                <rect th:if="${statusList.status == 'error'}" width="53.13" height="10" rx="5" fill="#FF4219"/>
+                                                                            </svg>
+                                                                        </div>
+                                                                        <p class="num_tag">04</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="right_content_wrapper_total">
+                                                                    <div class="monitor_info monitor_total_info">
+                                                                        <p class="name_tag">수하물 처리량</p>
+                                                                        <div class="bar"></div>
+                                                                        <p class="num_tag">14</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status_content content_wrap">
+                    <div class="status_header header">
+                        <p class="status_tittle">모니터링 상태</p>
+                        <button onclick="mqttTest()">테스트</button>
+                        <p class="date">[[${#calendars.format(#calendars.createNow(), 'YY년 MM월 dd일 HH시 mm분 ss초')}]]</p>
+                    </div>
+                    <div class="status_wrapper">
+                        <div class="status">
+                            <div class="label">
+                                <div class="top_line">
+                                    <div class="label_wrapper">
+                                        <div class="reading_label label_color"></div>
+                                        <span id="desc_1st">READING</span>
+                                    </div>
+                                    <div class="label_wrapper">
+                                        <div class="error_label label_color"></div>
+                                        <span>ERROR</span>
+                                    </div>
+                                </div>
+                                <div class="bottom_line">
+                                    <div class="label_wrapper">
+                                        <div class="waiting_label label_color"></div>
+                                        <span id="desc_2nd">WAITING</span>
+                                    </div>
+                                    <div class="label_wrapper">
+                                        <div class="pause_label label_color"></div>
+                                        <span>PAUSE</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="graph reading_graph">
+                                <div class="graph_container">
+                                    <div class="status_variable">
+                                        <p id="status_1st">READING</p>
+                                        <div class="num_wrapper">
+                                            <p id="reading_count_checkPc" class="num" th:value="${viewerReadingCount}">[[${viewerReadingCount}]]</p>
+                                            <p id="reading_count_xray" class="num hidden" th:value="${xrayReadingCount}">[[${xrayReadingCount}]]</p>
+                                            <p id="reading_count_trs" class="num hidden" th:value="${trsReadingCount}">[[${trsReadingCount}]]</p>
+                                            <p class="amount">대</p>
+                                        </div>
+                                    </div>
+                                    <div class="circle_graph">
+                                        <svg class="circle_progress" width="calc(1rem + 6vw)" height="calc(1rem + 6vw)" viewBox="0 0 128 128" fill="none">
+                                            <svg width="140" height="140" viewBox="0 0 140 140">
+                                                <circle class="frame" cx="65" cy="65" r="49" stroke-width="20" />
+                                                <circle id="check_pcR" class="circle" cx="65" cy="65" r="49" stroke-width="20" />
+                                            </svg>
+                                            <p id="reading_percent_checkPc" class="percentage" th:value="${viewerReadingPercent}">[[${viewerReadingPercent}]]%</p>
+                                            <p id="reading_percent_xray" class="percentage hidden" th:value="${xrayReadingPercent}">[[${xrayReadingPercent}]]%</p>
+                                            <p id="reading_percent_trs" class="percentage hidden" th:value="${trsReadingPercent}">[[${trsReadingPercent}]]%</p>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="graph waiting_graph">
+                                <div class="graph_container">
+                                    <div class="status_variable">
+                                        <p id="status_2nd">WAITING</p>
+                                        <div class="num_wrapper">
+                                            <p id="waiting_count_checkPc" class="num" th:value="${viewerWaitingCount}">[[${viewerWaitingCount}]]</p>
+                                            <p id="waiting_count_xray" class="num hidden" th:value="${xrayWaitingCount}">[[${xrayWaitingCount}]]</p>
+                                            <p id="waiting_count_trs" class="num hidden" th:value="${trsWaitingCount}">[[${trsWaitingCount}]]</p>
+                                            <p class="amount">대</p>
+                                        </div>
+                                    </div>
+                                    <div class="circle_graph">
+                                        <svg class="circle_progress" width="calc(1rem + 6vw)" height="calc(1rem + 6vw)" viewBox="0 0 128 128" fill="none">
+                                            <svg width="140" height="140" viewBox="0 0 140 140">
+                                                <circle class="frame" cx="65" cy="65" r="49" stroke-width="20" />
+                                                <circle id="check_pcW" class="circle2" cx="65" cy="65" r="49" stroke-width="20" />
+                                            </svg>
+                                            <p id="waiting_percent_checkPc" class="percentage" th:value="${viewerWaitingPercent}">[[${viewerWaitingPercent}]]%</p>
+                                            <p id="waiting_percent_xray" class="percentage hidden" th:value="${xrayWaitingPercent}">[[${xrayWaitingPercent}]]%</p>
+                                            <p id="waiting_percent_trs" class="percentage hidden" th:value="${trsWaitingPercent}">[[${trsWaitingPercent}]]%</p>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="graph error_graph">
+                                <div class="graph_container">
+                                    <div class="status_variable">
+                                        <p>ERROR</p>
+                                        <div class="num_wrapper">
+                                            <p class="num">00</p>
+                                            <p class="num hidden"></p>
+                                            <p class="amount">대</p>
+                                        </div>
+                                    </div>
+                                    <div class="circle_graph">
+                                        <svg class="circle_progress" width="calc(1rem + 6vw)" height="calc(1rem + 6vw)" viewBox="0 0 128 128" fill="none">
+                                            <svg width="140" height="140" viewBox="0 0 140 140">
+                                                <circle class="frame" cx="65" cy="65" r="49" stroke-width="20" />
+                                                <circle id="check_pcE" class="circle3" cx="65" cy="65" r="49" stroke-width="20" />
+                                            </svg>
+                                            <p class="percentage">0%</p>
+                                            <p class="percentage hidden">0%</p>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="total">
+                                <div class="total_wrapper">
+                                    <p class="tag">Total</p>
+                                    <p id="check_size" class="result">[[${viewerInfo.size()}]]대</p>
+                                    <p id="xray_size" class="result hidden">[[${xrayInfo.size()}]]대</p>
+                                    <p id="trs_size" class="result hidden">[[${trsInfo.size()}]]대</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/storg/js/swiper-bundle.js"></script>
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                let circle =  $('#check_pcR');
+                let circle2 = $('#check_pcW');
+                let circle3 = $('#check_pcE');
+                let value1 = $('#reading_percent_checkPc').attr('value');
+                let value2 = $('#waiting_percent_checkPc').attr('value');
+
+                if(value1=='' || value1 == null){
+                    value1 = 0;
+                }
+                if(value2=='' || value2 == null){
+                    value2 = 0;
+                }
+
+                let RADIUS = 49;
+                let CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+                //처음 퍼센트 원형그래프 그려주는 기능
+                function progress() {
+                    let progress1 = value1 / 100;
+                    let progress2 = value2 / 100;
+                    let progress3 = 0 / 100;
+                    let dashoffset;
+                    dashoffset = CIRCUMFERENCE * (1 - progress1);
+                    circle.css('stroke-dashoffset',dashoffset);
+                    dashoffset = CIRCUMFERENCE * (1 - progress2);
+                    circle2.css('stroke-dashoffset',dashoffset);
+                    dashoffset = CIRCUMFERENCE * (1 - progress3);
+                    circle3.css('stroke-dashoffset',dashoffset);
+                }
+                circle.css('stroke-dasharray',CIRCUMFERENCE);
+                circle2.css('stroke-dasharray',CIRCUMFERENCE);
+                circle3.css('stroke-dasharray',CIRCUMFERENCE);
+                progress();
+            });
+
+            var swiper = new Swiper(".mySwiper", {
+                autoplay: {
+                    delay: /*[[${settings.swiperSpeed}]]*/,
+                    disableOnInteraction: false,
+                },
+                loop:true,
+                speed:2500,
+                on: {
+                    slideChangeTransitionStart : function() {
+                        var RADIUS = 49;
+                        var CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+                        var dashoffset_Reading;
+                        var dashoffset_Waiting;
+                        //각 슬라이드의 기능은 동일
+                        //기존 상태값과 장비수를 숨기고 각 슬라이드의 장비의 상태값과 장비수를 표츌
+                        //조건문 마다 슬라이드 번호
+                        if(swiper.realIndex == 0){
+                            $('#waiting_count_checkPc').show();
+                            $('#waiting_count_xray').hide();
+                            $('#waiting_count_trs').hide();
+
+                            $('#reading_count_checkPc').show();
+                            $('#reading_count_xray').hide();
+                            $('#reading_count_trs').hide();
+
+                            $('#waiting_percent_checkPc').show();
+                            $('#waiting_percent_xray').hide();
+                            $('#waiting_percent_trs').hide();
+
+                            $('#reading_percent_checkPc').show();
+                            $('#reading_percent_xray').hide();
+                            $('#reading_percent_trs').hide();
+
+                            $('#check_size').show();
+                            $('#xray_size').hide();
+                            $('#trs_size').hide();
+
+                            $('.circle').attr('id','check_pcR')
+                            $('.circle2').attr('id','check_pcW')
+                            dashoffset_Reading = CIRCUMFERENCE * (1 - (Number($('#reading_percent_checkPc').attr('value'))/100));
+                            dashoffset_Waiting = CIRCUMFERENCE * (1 - (Number($('#waiting_percent_checkPc').attr('value'))/100));
+                            $('#check_pcR').css('stroke-dashoffset',dashoffset_Reading);
+                            $('#check_pcW').css('stroke-dashoffset',dashoffset_Waiting);
+
+                            $('#title').text('Check PC');
+                            $('#status_1st').text('WORKING');
+                            $('#status_2nd').text('WAITING');
+                            $('#desc_1st').text('WORKING');
+                            $('#desc_2nd').text('WAITING');
+                            $('.grid_wrapper').scrollTop(0);
+                        }else if(swiper.realIndex == 1){
+                            $('#waiting_count_checkPc').hide();
+                            $('#waiting_count_xray').show();
+                            $('#waiting_count_trs').hide();
+
+                            $('#reading_count_checkPc').hide();
+                            $('#reading_count_xray').show();
+                            $('#reading_count_trs').hide();
+
+                            $('#waiting_percent_checkPc').hide();
+                            $('#waiting_percent_xray').show();
+                            $('#waiting_percent_trs').hide();
+
+                            $('#reading_percent_checkPc').hide();
+                            $('#reading_percent_xray').show();
+                            $('#reading_percent_trs').hide();
+
+                            $('#check_size').hide();
+                            $('#xray_size').show();
+                            $('#trs_size').hide();
+
+                            $('.circle').attr('id','xrayR')
+                            $('.circle2').attr('id','xrayW')
+                            dashoffset_Reading = CIRCUMFERENCE * (1 - (Number($('#reading_percent_xray').attr('value'))/100));
+                            dashoffset_Waiting = CIRCUMFERENCE * (1 - (Number($('#waiting_percent_xray').attr('value'))/100));
+                            $('#xrayR').css('stroke-dashoffset',dashoffset_Reading);
+                            $('#xrayW').css('stroke-dashoffset',dashoffset_Waiting);
+
+                            $('#title').text('X-Ray');
+                            $('#status_1st').text('WORKING');
+                            $('#status_2nd').text('WAITING');
+                            $('#desc_1st').text('WORKING');
+                            $('#desc_2nd').text('WAITING');
+                            $('.grid_wrapper').scrollTop(0);
+                        //세번째 슬라이드 일때 작동하는 기능
+                        } else{
+                            $('#waiting_count_checkPc').hide();
+                            $('#waiting_count_xray').hide();
+                            $('#waiting_count_trs').show();
+
+                            $('#reading_count_checkPc').hide();
+                            $('#reading_count_xray').hide();
+                            $('#reading_count_trs').show();
+
+                            $('#waiting_percent_checkPc').hide();
+                            $('#waiting_percent_xray').hide();
+                            $('#waiting_percent_trs').show();
+
+                            $('#reading_percent_checkPc').hide();
+                            $('#reading_percent_xray').hide();
+                            $('#reading_percent_trs').show();
+
+                            $('#check_size').hide();
+                            $('#xray_size').hide();
+                            $('#trs_size').show();
+
+                            $('.circle').attr('id','trsR')
+                            $('.circle2').attr('id','trsW')
+                            dashoffset_Reading = CIRCUMFERENCE * (1 - (Number($('#reading_percent_trs').attr('value'))/100));
+                            dashoffset_Waiting = CIRCUMFERENCE * (1 - (Number($('#waiting_percent_trs').attr('value'))/100));
+                            $('#trsR').css('stroke-dashoffset',dashoffset_Reading);
+                            $('#trsW').css('stroke-dashoffset',dashoffset_Waiting);
+                            $('#title').text('TRS');
+                            $('#status_1st').text('WORKING');
+                            $('#status_2nd').text('WAITING');
+                            $('#desc_1st').text('WORKING');
+                            $('#desc_2nd').text('WAITING');
+                            $('.grid_wrapper').scrollTop(0);
+                        }
+                    },
+                },
+            });
+        </script>
+        <script>
+            $(function(){
+                $(document).keydown(function(e) {
+                    switch(e.which) {
+                        case 32: // 스페이스바
+                            $('#toggleSwiper').click();
+                            break;
+                        case 37: // 왼쪽 방향키
+                            swiper.slidePrev();
+                            break;
+                        case 39: // 오른쪽 방향키
+                            swiper.slideNext();
+                            break;
+                    }
+                });
+            })
+
+        </script>
+    </main>
+</body>
+</html>
