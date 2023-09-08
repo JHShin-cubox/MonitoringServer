@@ -10,7 +10,7 @@
         $(function(){
             pcMqtt();
             xrayMqtt();
-            // trsMqtt();
+            trsMqtt();
         })
     </script>
     <script>
@@ -65,9 +65,9 @@
                                                                     <p th:id="'check'+${statusListStat.index}" class="reg_num">[[${statusList.name}]]</p>
                                                                 </div>
                                                             </div>
-                                                            <div class="bottom_info">
-                                                                <p class="time_tag">평균 판독 시간</p>
-                                                                <p class="time">01h 23m 01s</p>
+                                                            <div class="bottom_info ">
+                                                                <p class="time_tag ">평균 판독 시간</p>
+                                                                <p class="time ">01h 23m 01s</p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -78,25 +78,23 @@
                                                                     <div class="monitor_info ">
                                                                         <p  class="name_tag">통과수하물</p>
                                                                         <div class="bar">
-                                                                            <progress th:if="${statusList.status == 'working'}" class="progress workingP" min="0" max="100" value="30"></progress>
-                                                                            <progress th:if="${statusList.status == 'waiting'}" class="progress waitingP" min="0" max="100" value="30"></progress>
+                                                                            <progress th:id="'check_pass_progress'+${statusListStat.index}" th:class="${statusList.status == 'working' ? 'progress workingP' : 'progress waitingP'}" min="0" max="100" th:value="${statusList.passLuggage}/${statusList.totalLuggage}*100"></progress>
                                                                         </div>
-                                                                        <p class="num_tag">06</p>
+                                                                        <p th:id="'check_pass_count'+${statusListStat.index}" class="num_tag">[[${statusList.passLuggage}]]</p>
                                                                     </div>
                                                                     <div class="monitor_info">
                                                                         <p class="name_tag">개봉수하물</p>
                                                                         <div class="bar">
-                                                                            <progress th:if="${statusList.status == 'working'}" class="progress workingP" min="0" max="100" value="30"></progress>
-                                                                            <progress th:if="${statusList.status == 'waiting'}" class="progress waitingP" min="0" max="100" value="30"></progress>
+                                                                            <progress th:id="'check_open_progress'+${statusListStat.index}" th:class="${statusList.status == 'working' ? 'progress workingP' : 'progress waitingP'}" min="0" max="100" th:value="${statusList.openLuggage}/${statusList.totalLuggage}*100"></progress>
                                                                         </div>
-                                                                        <p class="num_tag">04</p>
+                                                                        <p th:id="'check_open_count'+${statusListStat.index}" class="num_tag">[[${statusList.openLuggage}]]</p>
                                                                     </div>
                                                                 </div>
                                                                 <div class="right_content_wrapper_total">
                                                                     <div class="monitor_info monitor_total_info">
                                                                         <p class="name_tag">전체수하물</p>
                                                                         <div class="bar"></div>
-                                                                        <p class="num_tag">14</p>
+                                                                        <p th:id="'check_total_count'+${statusListStat.index}" class="num_tag">[[${statusList.totalLuggage}]]</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -139,36 +137,14 @@
                                                         <div>
                                                             <div class="content_placement">
                                                                 <div class="right_content_wrapper">
-                                                                    <div class="monitor_info xray_none">
-                                                                        <p  class="name_tag">통과수하물</p>
-                                                                        <div class="bar">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69 10" fill="none">
-                                                                                <rect width="69" height="10" rx="5" fill="black" fill-opacity="0.18"/>
-                                                                                <rect th:if="${statusList.status == 'working'}" width="27.6" height="10" rx="5" fill="#30F4B3"/>
-                                                                                <rect th:if="${statusList.status == 'waiting'}" width="27.6" height="10" rx="5" fill="#FFD466"/>
-                                                                                <rect th:if="${statusList.status == 'error'}" width="27.6" height="10" rx="5" fill="#FF4219"/>
-                                                                            </svg>
-                                                                        </div>
-                                                                        <p class="num_tag">06</p>
-                                                                    </div>
-                                                                    <div class="monitor_info xray_none">
-                                                                        <p class="name_tag">개봉수하물</p>
-                                                                        <div class="bar">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69 10" fill="none">
-                                                                                <rect width="69" height="10" rx="5" fill="black" fill-opacity="0.18"/>
-                                                                                <rect th:if="${statusList.status == 'working'}" width="53.13" height="10" rx="5" fill="#30F4B3"/>
-                                                                                <rect th:if="${statusList.status == 'waiting'}" width="53.13" height="10" rx="5" fill="#FFD466"/>/
-                                                                                <rect th:if="${statusList.status == 'error'}" width="53.13" height="10" rx="5" fill="#FF4219"/>
-                                                                            </svg>
-                                                                        </div>
-                                                                        <p class="num_tag">04</p>
-                                                                    </div>
+                                                                    <div class="monitor_info xray_none"></div>
+                                                                    <div class="monitor_info xray_none"></div>
                                                                 </div>
                                                                 <div class="right_content_wrapper_total">
                                                                     <div class="monitor_info monitor_total_info">
                                                                         <p class="name_tag">전체수하물</p>
                                                                         <div class="bar"></div>
-                                                                        <p class="num_tag">14</p>
+                                                                        <p th:id="'xray_total_count'+${statusListStat.index}" class="num_tag">[[${statusList.totalLuggage}]]</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -211,36 +187,14 @@
                                                         <div>
                                                             <div class="content_placement">
                                                                 <div class="right_content_wrapper">
-                                                                    <div class="monitor_info xray_none">
-                                                                        <p  class="name_tag">통과수하물</p>
-                                                                        <div class="bar">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69 10" fill="none">
-                                                                                <rect width="69" height="10" rx="5" fill="black" fill-opacity="0.18"/>
-                                                                                <rect th:if="${statusList.status == 'working'}" width="27.6" height="10" rx="5" fill="#30F4B3"/>
-                                                                                <rect th:if="${statusList.status == 'waiting'}" width="27.6" height="10" rx="5" fill="#FFD466"/>
-                                                                                <rect th:if="${statusList.status == 'error'}" width="27.6" height="10" rx="5" fill="#FF4219"/>
-                                                                            </svg>
-                                                                        </div>
-                                                                        <p class="num_tag">06</p>
-                                                                    </div>
-                                                                    <div class="monitor_info xray_none">
-                                                                        <p class="name_tag">개봉수하물</p>
-                                                                        <div class="bar">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69 10" fill="none">
-                                                                                <rect width="69" height="10" rx="5" fill="black" fill-opacity="0.18"/>
-                                                                                <rect th:if="${statusList.status == 'working'}" width="53.13" height="10" rx="5" fill="#30F4B3"/>
-                                                                                <rect th:if="${statusList.status == 'waiting'}" width="53.13" height="10" rx="5" fill="#FFD466"/>/
-                                                                                <rect th:if="${statusList.status == 'error'}" width="53.13" height="10" rx="5" fill="#FF4219"/>
-                                                                            </svg>
-                                                                        </div>
-                                                                        <p class="num_tag">04</p>
-                                                                    </div>
+                                                                    <div class="monitor_info xray_none"></div>
+                                                                    <div class="monitor_info xray_none"></div>
                                                                 </div>
                                                                 <div class="right_content_wrapper_total">
                                                                     <div class="monitor_info monitor_total_info">
                                                                         <p class="name_tag">수하물 처리량</p>
                                                                         <div class="bar"></div>
-                                                                        <p class="num_tag">14</p>
+                                                                        <p th:id="'trs_total_count'+${statusListStat.index}" class="num_tag">[[${statusList.totalLuggage}]]</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -258,7 +212,6 @@
                 <div class="status_content content_wrap">
                     <div class="status_header header">
                         <p class="status_tittle">모니터링 상태</p>
-                        <button onclick="xrayInsertTest()">테스트</button>
                         <p class="date">[[${#calendars.format(#calendars.createNow(), 'YY년 MM월 dd일 HH시 mm분 ss초')}]]</p>
                     </div>
                     <div class="status_wrapper">

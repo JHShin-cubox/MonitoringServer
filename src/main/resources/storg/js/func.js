@@ -89,7 +89,7 @@ function xrayInsertTest(){
     let div3_1_1_2 = $("<div class='num'></div>");
     let p2 = $("<p id='xray3' class='reg_num' value=3>장비명</p>")
 
-    let div3_1_2 = $("<div class='bottom_info'></div>");
+    let div3_1_2 = $("<div class='bottom_info xray_bottom'></div>");
     let p3 = $("<p class='time_tag xray_none'></p>");
     let p4 = $("<p class='time xray_none'></p>");
 

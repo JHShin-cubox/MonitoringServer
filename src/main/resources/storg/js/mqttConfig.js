@@ -36,11 +36,9 @@ function pcMqtt() {
 
 
             //아이디가 check+i의 텍스트와 json의 ip가 다르면 삽입
-            if($('#check'+i).text()!=ip){
+            // if($('#check'+i).text()!=ip){
                 let div1;
-
                 let hidden1 = $("<input type='hidden' id='check_status"+i+"' value='"+jsonData.data[i].pcStatus+"'/>")
-
                 if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == true) div1 = $("<div id='check_div"+i+"' class='waiting check_div'></div>");
                 else if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == false) div1 = $("<div id='check_div"+i+"' class='waiting dimmed check_div'></div>");
                 else if(jsonData.data[i].pcStatus == 'working' && jsonData.data[i].open == true) div1 = $("<div id='check_div"+i+"' class='reading check_div'></div>");
@@ -71,8 +69,8 @@ function pcMqtt() {
                 let p5 = $("<p class='name_tag'>통과 수하물</p>");
                 let div4_1_1 = $("<div class='bar'></div>");
                 let progress1;
-                if(jsonData.data[i].pcStatus == 'working') progress1 = $("<progress class='progress workingP' min='0' max='100' value='30'></progress");
-                else if(jsonData.data[i].pcStatus == 'waiting') progress1 = $("<progress class='progress waitingP' min='0' max='100' value='30'></progress");
+                if(jsonData.data[i].pcStatus == 'working') progress1 = $("<progress class='progress workingP' min='0' max='100' value="+percentPass+"></progress");
+                else if(jsonData.data[i].pcStatus == 'waiting') progress1 = $("<progress class='progress waitingP' min='0' max='100' value="+percentPass+"></progress");
                 else progress1 = $("<progress class='progress workingP' min='0' max='100' value="+percentPass+"></progress");
                 let p6 = $("<p class='num_tag'>"+passLuggage+"</p>");
 
@@ -80,8 +78,8 @@ function pcMqtt() {
                 let p7 = $("<p class='name_tag'>개봉 수하물</p>");
                 let div4_2_1 = $("<div class='bar'></div>");
                 let progress2;
-                if(jsonData.data[i].pcStatus == 'working') progress2 = $("<progress class='progress workingP' min='0' max='100' value='30'></progress");
-                else if(jsonData.data[i].pcStatus == 'waiting') progress2 = $("<progress class='progress waitingP' min='0' max='100' value='30'></progress");
+                if(jsonData.data[i].pcStatus == 'working') progress2 = $("<progress class='progress workingP' min='0' max='100' value="+percentOpen+"></progress");
+                else if(jsonData.data[i].pcStatus == 'waiting') progress2 = $("<progress class='progress waitingP' min='0' max='100' value="+percentOpen+"></progress");
                 else progress2 = $("<progress class='progress workingP' min='0' max='100' value="+percentOpen+"></progress");
                 let p8 = $("<p class='num_tag'>"+openLuggage+"</p>");
 
@@ -115,16 +113,25 @@ function pcMqtt() {
                 div2.append(div3).append(div4);
                 div1.append(div2).append(hidden1)
                 $('.gr_checkPc').append(div1);
-            }
+            // }
+            // 각 수하물 개수 업데이트
+            $('#check_pass_progress'+i).attr('value',percentPass);
 
+            $('#check_open_progress'+i).attr('value',percentOpen);
+            $('#check_pass_count'+i).text(passLuggage);
+            $('#check_open_count'+i).text(openLuggage);
+            $('#check_total_count'+i).text(totalLuggage);
             if(jsonData.data[i].pcStatus != $('#check_status'+i).val()){
                 $('#check_status'+i).val(jsonData.data[i].pcStatus);
+
                 if(jsonData.data[i].pcStatus == 'waiting'){
                     if($('#check_div'+i).hasClass('reading')){
                         $('#check_div'+i).removeClass('reading');
                         $('#check_div'+i).addClass('waiting');
                         $('#check_state_info'+i).children().eq(0).attr('src','/storg/img/waiting_icon.png');
                         $('#check_state_info'+i).children().eq(1).text('WAITING');
+                        $('#check_pass_progress'+i).attr('class',"progress waitingP");
+                        $('#check_open_progress'+i).attr('class',"progress waitingP");
                     }
                 } else{
                     if($('#check_div'+i).hasClass('waiting')){
@@ -132,6 +139,8 @@ function pcMqtt() {
                         $('#check_div'+i).addClass('reading');
                         $('#check_state_info'+i).children().eq(0).attr('src','/storg/img/reading_icon.png');
                         $('#check_state_info'+i).children().eq(1).text('WORKING');
+                        $('#check_pass_progress'+i).attr('class',"progress workingP");
+                        $('#check_open_progress'+i).attr('class',"progress workingP");
                     }
                 }
             }
@@ -238,7 +247,7 @@ function xrayMqtt() {
             //관제 상태창 상태값 수 설정
             if(status == 'WORKING') value1++;
             else if(status == 'WAITING') value2++;
-            // if($('#xray'+i).text()!=ip){
+            if($('#xray'+i).text()!=ip){
                 let hidden1 = $("<input type='hidden' id='xray_status"+i+"' value='"+jsonData.data[i].pcStatus+"'/>")
                 let div1;
                 if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == true) div1 = $("<div class='waiting'></div>");
@@ -259,7 +268,7 @@ function xrayMqtt() {
                 let div3_1_1_2 = $("<div class='num'></div>");
                 let p2 = $("<p id='xray"+i+"' class='reg_num' value="+i+">"+ip+"</p>")
 
-                let div3_1_2 = $("<div class='bottom_info'></div>");
+                let div3_1_2 = $("<div class='bottom_info xray_bottom'></div>");
                 let p3 = $("<p class='time_tag xray_none'></p>");
                 let p4 = $("<p class='time xray_none'></p>");
 
@@ -296,11 +305,11 @@ function xrayMqtt() {
                 div2.append(div3).append(div4);
                 div1.append(div2).append(hidden1)
                 $('.gr_xray').append(div1);
-            // }
-
+            }
+            $('#xray_total_count'+i).text(totalLuggage);
             if(jsonData.data[i].pcStatus != $('#xray_status'+i).val()){
                 $('#xray_status'+i).val(jsonData.data[i].pcStatus);
-                if(jsonData.data[i].pcStatus == 'start'){
+                if(jsonData.data[i].pcStatus == 'working'){
                     if($('#xray_div'+i).hasClass('waiting')){
                         $('#xray_div'+i).removeClass('waiting')
                         $('#xray_div'+i).addClass('reading')
@@ -405,6 +414,7 @@ function trsMqtt() {
             let idx = jsonData.data[i].idx; // idx로 html id mapping
             let ip = jsonData.data[i].ip; // idx로 html id mapping
             let status = jsonData.data[i].pcStatus.toUpperCase(); // idx로 html id mapping
+            let totalLuggage = jsonData.data[i].totalLuggage;
 
             if(status == 'WORKING'){
                 value1++;
@@ -442,27 +452,7 @@ function trsMqtt() {
                 let div4P = $("<div class='content_placement'></div>");
                 let div4W1 = $("<div class='right_content_wrapper'></div>");
                 let div4_1 = $("<div class='monitor_info'></div>");
-
-                let p5 = $("<p class='name_tag'></p>");
-                let div4_1_1 = $("<div class='bar'></div>");
-                let svg1 = $("<svg viewBox='0 0 69 10' fill='none'>");
-                let rect1 = $("<rect width='69' height='10' rx='5' fill='black' fill-opacity='0.18'/>");
-                let rect2;
-                if(jsonData.data[i].pcStatus == 'working') rect2 = $("<rect width='27.6' height='10' rx='5' fill='#30F4B3'/>");
-                else if(jsonData.data[i].pcStatus == 'waiting') rect2 = $("<rect width='27.6' height='10' rx='5' fill='#FFD466'/>");
-                else rect2 = $("<rect width='27.6' height='10' rx='5' fill='#FF4219'/>");
-                let p6 = $("<p class='num_tag'></p>");
-
                 let div4_2 = $("<div class='monitor_info'></div>");
-                let p7 = $("<p class='name_tag'></p>");
-                let div4_2_1 = $("<div class='bar'></div>");
-                let svg2 = $("<svg viewBox='0 0 69 10' fill='none'>");
-                let rect3 = $("<rect width='69' height='10' rx='5' fill='black' fill-opacity='0.18'/>");
-                let rect4;
-                if(jsonData.data[i].pcStatus == 'working') rect4 = $("<rect width='27.6' height='10' rx='5' fill='#30F4B3'/>");
-                else if(jsonData.data[i].pcStatus == 'waiting') rect4 = $("<rect width='27.6' height='10' rx='5' fill='#FFD466'/>");
-                else rect4 = $("<rect width='27.6' height='10' rx='5' fill='#FF4219'/>");
-                let p8 = $("<p class='name_tag'></p>");
 
                 let div4W2 = $("<div class='right_content_wrapper_total'></div>");
                 let div4W2_1 = $("<div class='monitor_info monitor_total_info'></div>");
@@ -472,22 +462,11 @@ function trsMqtt() {
 
                 div4W2_1.append(p9).append(div4W_S).append(p10)
                 div4W2.append(div4W2_1)
-
-                svg1.append(rect3).append(rect4)
-                div4_1_1.append(svg2)
-                div4_2.append(p7).append(div4_2_1).append(p8)
-
-                svg1.append(rect1).append(rect2)
-                div4_1_1.append(svg1)
-                div4_1.append(p5).append(div4_1_1).append(p6)
                 div4W1.append(div4_1).append(div4_2)
-
                 div4P.append(div4W1).append(div4W2)
                 div4C.append(div4P)
                 div4.append(div4C)
-
                 div3_1_2.append(p3).append(p4)
-
                 div3_1_1_2.append(p2)
                 div3_1_1_1.append(img1).append(p1)
                 div3_1_1.append(div3_1_1_1).append(div3_1_1_2)
@@ -495,9 +474,9 @@ function trsMqtt() {
                 div3.append(div3_1)
                 div2.append(div3).append(div4);
                 div1.append(div2).append(hidden1)
-                $('.gr_Trs').append(div1);
+                $('.gr_trs').append(div1);
             }
-
+            $('#trs_total_count'+i).text(totalLuggage);
             if(jsonData.data[i].pcStatus != $('#trs_status'+i).val()){
                 $('#trs_status'+i).val(jsonData.data[i].pcStatus);
                 if(jsonData.data[i].pcStatus == 'start'){

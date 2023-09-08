@@ -11,16 +11,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class DeviceDTO {
-    private Long id;
-    private String name;
-    private Boolean power;
-    private String status;
-    private Date reg_date;
-    private Date modified_date;
-    private Integer distribution_count;
-    private String type;
-    private Integer openLuggage;
+public class LuggageDTO {
     private Integer passLuggage;
+    private Integer openLuggage;
     private Integer totalLuggage;
 }

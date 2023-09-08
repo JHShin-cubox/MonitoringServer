@@ -65,7 +65,8 @@ main {position: relative; height: 100vh; width: 100vw;}
 
 
 /* monitor grid*/
-.grid_wrapper {width: 100%; height: 77vh; margin: 0 auto;}
+/*.grid_wrapper {width: 100%; height: 77vh; margin: 0 auto;}*/
+.grid_wrapper {width: 69vw; height: 77vh; margin: 0 auto;}
 .grid {display: grid; grid-template-columns: repeat(3, minmax(auto, 1fr)); overflow: scroll;-ms-overflow-style: none; scrollbar-width: none; /* 파이어폭스 */}
 /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
 .grid::-webkit-scrollbar {    display: none;}
@@ -80,6 +81,7 @@ main {position: relative; height: 100vh; width: 100vw;}
 .grid .content_status img {width: calc(0.8rem + 1vw); height: calc(0.8rem + 1vw);}
 .grid .content_status p {font-size: var(--grid_content_font_size); padding: 0 3% 0 4%; font-weight: 600;}
 .reg_num {font-size: var(--monitor_num); font-weight: 400;}
+
 
 /* updated monitor grid */
 .grid .content_placement {display: flex; flex-direction: column; justify-content: space-between; height: 95%; width: 100%;}
@@ -101,7 +103,7 @@ main {position: relative; height: 100vh; width: 100vw;}
 .grid .right_content_wrapper_total {position: relative; width: 100%;}
 .grid .right_content_wrapper_total::before { position: absolute; content: ""; height: 1%; background-color: #eaeaea; width: 100%; top: -25%; }
 .grid .right_content .name_tag {font-size: var(--name_tag);}
-.grid .right_content .num_tag {font-size: var(--num_tag); font-weight: 600;}
+.grid .right_content .num_tag {font-size: var(--num_tag); font-weight: 600; width: 17%; text-align: center;}
 .grid .right_content .bar {width: calc(2.6rem + 1.6vw); padding: 0 2% 0 8%;}
 /* .grid .right_content .monitor_total_info {margin-top: 67%;} */
 
@@ -183,7 +185,9 @@ main {position: relative; height: 100vh; width: 100vw;}
 .hidden{display: none;}
 
 /* swiper */
-.swiper {    margin-left: 0 !important; margin-right: 0 !important; height: 100%;}
+/* swiper */
+
+.swiper { margin-left: 0 !important; margin-right: 0 !important; height: 100%;}
 .swiper-slide{width: 100% !important;}
 .swiper-horizontal{overflow: scroll !important;-ms-overflow-style: none; scrollbar-width: none;}
 .swiper-horizontal::-webkit-scrollbar {    display: none;}
@@ -191,8 +195,14 @@ main {position: relative; height: 100vh; width: 100vw;}
 .xray_bottom{padding-top: 61% !important;}
 .xray_none{display: none !important;}
 
-.progress{appearance: none;}
-.progress::-webkit-progress-bar {width: 45%; background:#0000002e; border-radius:10px; height:80%;}
+/* progress */
+
+.progress{appearance: none; width: 100%; height: calc(0.1rem + 0.5vw);}
+.progress::-webkit-progress-bar {background:#0000002e; border-radius: 10px;}
 .progress::-webkit-progress-value{border-radius:10px; }
-.workingP::-webkit-progress-value {background: #33FFCC;  }
-.waitingP::-webkit-progress-value {background: #FFCC66;  }
+.workingP::-webkit-progress-value {background: #33FFCC; }
+.waitingP::-webkit-progress-value {background: #FFCC66; }
+.grid .right_content .bar {padding: 0 3% 0 5%; display: flex; width: calc(2.6rem + 1.6vw); }
+
+
+

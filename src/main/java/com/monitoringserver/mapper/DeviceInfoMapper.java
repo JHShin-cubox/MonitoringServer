@@ -1,6 +1,7 @@
 package com.monitoringserver.mapper;
 
 import com.monitoringserver.dto.DeviceDTO;
+import com.monitoringserver.dto.LuggageDTO;
 import com.monitoringserver.dto.SettingDTO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -24,4 +25,6 @@ public interface DeviceInfoMapper {
     Integer getTrsReadingCount();
 
     SettingDTO getSettings();
+
+    LuggageDTO getLuggage();
 }

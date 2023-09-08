@@ -27,7 +27,8 @@
     --monitor_time_tag: calc(0.1rem + 0.6vw);
     --monitor_time: calc(0.1rem + 0.5vw);
     --name_tag: calc(0.1rem + 0.6vw);
-    --num_tag: calc(0.6rem + 0.5vw);
+    --num_tag: calc(0.3rem + 0.5vw);
+
 
     --grid_content_font_size: calc(0.1rem + 1.2vw);
 

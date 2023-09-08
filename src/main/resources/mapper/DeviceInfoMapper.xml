@@ -7,8 +7,11 @@
     <select id="getViewerInfo" resultType="com.monitoringserver.dto.DeviceDTO" >
         SELECT
             id, name, power, status, reg_date,
-            modified_date, 'viewer' as type
-        FROM device
+            modified_date, 'viewer' as type,
+            (SELECT count(*) FROM luggage WHERE check_id = A.id AND type = 'P') AS pass_luggage,
+            (SELECT count(*) FROM luggage WHERE check_id = A.id AND type = 'O') AS open_luggage,
+            (SELECT count(*) FROM luggage WHERE check_id = A.id) AS total_luggage
+        FROM device A
         WHERE type = 'C'
     </select>
 
@@ -23,8 +26,9 @@
     <select id="getXrayInfo" resultType="com.monitoringserver.dto.DeviceDTO" >
         SELECT
             id, name, power, status, reg_date,
-            modified_date, 'xray' as type
-        FROM device
+            modified_date, 'xray' as type,
+            (SELECT count(*) FROM luggage WHERE xray_id = A.id) AS total_luggage
+        FROM device A
         WHERE type = 'X'
     </select>
 
@@ -40,8 +44,9 @@
     <select id="getTrsInfo" resultType="com.monitoringserver.dto.DeviceDTO" >
         SELECT
             id, name, power, status, reg_date,
-            modified_date, 'trs' as type
-        FROM device
+            modified_date, 'trs' as type,
+            (SELECT count(*) FROM luggage WHERE trs_id = A.id) AS total_luggage
+        FROM device A
         WHERE type = 'T'
     </select>
 
