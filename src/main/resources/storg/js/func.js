@@ -74,3 +74,56 @@ function mqttTest(){
     div1.append(div2).append(hidden1)
     $('.gr_checkPc').append(div1);
 }
+
+function xrayInsertTest(){
+    let hidden1 = $("<input type='hidden' id='xray_status3' value='waiting'/>")
+    let div1 = $("<div class='waiting'></div>");
+    let div2 = $("<div class='content'></div>");
+    let div3 = $("<div class='left_contents'></div>");
+    let div3_1 = $("<div class='content_placement'></div>");
+    let div3_1_1 = $("<div></div>");
+    let div3_1_1_1 = $("<div class='state_info'></div>");
+    let img1 = $("<img src='/storg/img/waiting_icon.png' alt=''>");
+    let p1 = $("<p>waiting</p>")
+
+    let div3_1_1_2 = $("<div class='num'></div>");
+    let p2 = $("<p id='xray3' class='reg_num' value=3>장비명</p>")
+
+    let div3_1_2 = $("<div class='bottom_info'></div>");
+    let p3 = $("<p class='time_tag xray_none'></p>");
+    let p4 = $("<p class='time xray_none'></p>");
+
+    let div4 = $("<div class='right_content'></div>");
+    let div4C = $("<div></div>");
+    let div4P = $("<div class='content_placement'></div>");
+    let div4W1 = $("<div class='right_content_wrapper'></div>");
+    let div4_1 = $("<div class='monitor_info xray_none'></div>");
+    let div4_2 = $("<div class='monitor_info xray_none'></div>");
+
+
+    let div4W2 = $("<div class='right_content_wrapper_total'></div>");
+    let div4W2_1 = $("<div class='monitor_info monitor_total_info'></div>");
+    let p9 = $("<p class='name_tag'>수하물 처리량</p>");
+    let div4W_S = $("<div class='monitor_info monitor_total_info'></div>");
+    let p10 = $("<p class='num_tag'>15</p>");
+
+    div4W2_1.append(p9).append(div4W_S).append(p10)
+    div4W2.append(div4W2_1)
+
+    div4W1.append(div4_1).append(div4_2)
+
+    div4P.append(div4W1).append(div4W2)
+    div4C.append(div4P)
+    div4.append(div4C)
+
+    div3_1_2.append(p3).append(p4)
+
+    div3_1_1_2.append(p2)
+    div3_1_1_1.append(img1).append(p1)
+    div3_1_1.append(div3_1_1_1).append(div3_1_1_2)
+    div3_1.append(div3_1_1).append(div3_1_2)
+    div3.append(div3_1)
+    div2.append(div3).append(div4);
+    div1.append(div2).append(hidden1)
+    $('.gr_xray').append(div1);
+}

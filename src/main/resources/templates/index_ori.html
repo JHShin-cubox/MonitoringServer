@@ -10,7 +10,7 @@
         $(function(){
             pcMqtt();
             xrayMqtt();
-            trsMqtt();
+            // trsMqtt();
         })
     </script>
     <script>
@@ -258,7 +258,7 @@
                 <div class="status_content content_wrap">
                     <div class="status_header header">
                         <p class="status_tittle">모니터링 상태</p>
-                        <button onclick="mqttTest()">테스트</button>
+                        <button onclick="xrayInsertTest()">테스트</button>
                         <p class="date">[[${#calendars.format(#calendars.createNow(), 'YY년 MM월 dd일 HH시 mm분 ss초')}]]</p>
                     </div>
                     <div class="status_wrapper">
