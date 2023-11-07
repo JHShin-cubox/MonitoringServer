@@ -26,5 +26,4 @@ public interface DeviceInfoMapper {
 
     SettingDTO getSettings();
 
-    LuggageDTO getLuggage();
 }

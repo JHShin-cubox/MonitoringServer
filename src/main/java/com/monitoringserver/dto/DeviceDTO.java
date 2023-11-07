@@ -23,4 +23,5 @@ public class DeviceDTO {
     private Integer openLuggage;
     private Integer passLuggage;
     private Integer totalLuggage;
+    private Integer checkTime;
 }

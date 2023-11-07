@@ -192,7 +192,7 @@ main {position: relative; height: 100vh; width: 100vw;}
 .swiper-horizontal{overflow: scroll !important;-ms-overflow-style: none; scrollbar-width: none;}
 .swiper-horizontal::-webkit-scrollbar {    display: none;}
 
-.xray_bottom{padding-top: 61% !important;}
+.xray_bottom{padding-top: 54% !important;}
 .xray_none{display: none !important;}
 
 /* progress */

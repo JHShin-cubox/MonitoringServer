@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monitoringserver.mapper.AdexMapper">
+    <select id="getLabelName" resultType="java.lang.String">
+        SELECT level2 FROM ai_detection
+        <where>
+            AND label_id = #{labelId}
+        </where>
+    </select>
+    <insert id="insertAdex" parameterType="java.lang.String">
+        INSERT INTO adex_images (name,luggage_id) VALUES (#{name},#{luggageId})
+    </insert>
+
+    <select id="getRecentImage" resultType="com.monitoringserver.dto.AdexDTO">
+        select name, luggage_id, reg_date from adex_images where reg_date between date(now()) and date(now())+1 group by luggage_id order by reg_date desc limit 1
+    </select>
+
+    <select id="duplicateCheck" resultType="java.lang.String">
+        select * from adex_images where name = #{name} limit 1
+    </select>
+
+    <select id="getAdexStatus" resultType="com.monitoringserver.dto.AdexStatusDTO">
+        select
+            (select count(*) from xray_analyze_statistics A join ai_detection B on A.detection_id = B.label_id where B.level2 is not null and A.reg_date between date(now()) and date(now())+1) as detectionCount,
+            count(*) as luggageCount from
+                (select luggage_code from luggage where reg_date between date(now()) and date(now())+1) as luggageCount
+    </select>
+    <select id="getSumImage" resultType="com.monitoringserver.dto.AdexDTO">
+        select name from adex_images where luggage_id = (select luggage_id from adex_images order by reg_date desc limit 1) and reg_date between date(now()) and date(now())+1 limit 9
+    </select>
+
+    <select id="getTop10" resultType="com.monitoringserver.dto.AdexLabelDTO">
+        select B.level2 as label_name, count(*) as label_count
+        from xray_analyze_statistics A
+                 join ai_detection B on A.detection_id = B.label_id
+        where B.level2 is not null
+          and A.reg_date between date(now()) and date(now())+1
+        group by B.level2
+        order by label_count desc
+    </select>
+
+    <select id="getAdexList" resultType="com.monitoringserver.dto.AdexDTO">
+        select name,luggage_id,reg_date from adex_images where reg_date between date(now()) and date(now())+1 group by luggage_id order by reg_date desc
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+    <select id="getAdexCount" resultType="java.lang.Integer">
+        SELECT count(count_name) as count
+        FROM (
+            SELECT COUNT(name) AS count_name
+            FROM adex_images
+            where reg_date between date(now()) and date(now())+1
+            GROUP BY luggage_id
+            ) AS subquery;
+    </select>
+
+    <select id="getSubImageList" resultType="com.monitoringserver.dto.AdexDTO">
+        select name from adex_images
+            <where>
+                and luggage_id = #{luggageId}
+                and reg_date between date(now()) and date(now())+1
+            </where>
+            limit 9
+    </select>
+
+    <select id="getLastLugId" resultType="java.lang.String">
+        select luggage_id from adex_images where reg_date between date(now()) and date(now())+1 order by reg_date desc limit 1
+    </select>
+
+</mapper>

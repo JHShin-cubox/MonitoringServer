@@ -1,7 +1,7 @@
 function pcMqtt() {
     // MQTT 클라이언트 생성
-    let host = "broker.emqx.io";
-    let port = 8083
+    let host = window.location.hostname
+    let port = 8882
     let clientId = "clientId-" + Math.random().toString(16).substr(2, 8);
     let client = new Paho.MQTT.Client(host, port, clientId)
 
@@ -33,10 +33,14 @@ function pcMqtt() {
             let totalLuggage = jsonData.data[i].totalLuggage;
             let percentOpen = openLuggage/totalLuggage * 100;
             let percentPass = passLuggage/totalLuggage * 100;
+            let checkTime = jsonData.data[i].checkTime;
+            const hours = Math.floor(checkTime / 3600);
+            const minutes = Math.floor((checkTime % 3600) / 60);
+            const seconds = checkTime % 60;
 
 
             //아이디가 check+i의 텍스트와 json의 ip가 다르면 삽입
-            // if($('#check'+i).text()!=ip){
+            if($('#check'+i).text()!=ip){
                 let div1;
                 let hidden1 = $("<input type='hidden' id='check_status"+i+"' value='"+jsonData.data[i].pcStatus+"'/>")
                 if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == true) div1 = $("<div id='check_div"+i+"' class='waiting check_div'></div>");
@@ -58,7 +62,7 @@ function pcMqtt() {
 
                 let div3_1_2 = $("<div class='bottom_info'></div>");
                 let p3 = $("<p class='time_tag'>평균 판독 시간</p>");
-                let p4 = $("<p class='time'>01h 23m 01s</p>");
+                let p4 = $("<p class='time'>"+hours+"h "+minutes+"m "+seconds+"s</p>");
 
                 let div4 = $("<div class='right_content'></div>");
                 let div4C = $("<div></div>");
@@ -113,7 +117,7 @@ function pcMqtt() {
                 div2.append(div3).append(div4);
                 div1.append(div2).append(hidden1)
                 $('.gr_checkPc').append(div1);
-            // }
+            }
             // 각 수하물 개수 업데이트
             $('#check_pass_progress'+i).attr('value',percentPass);
 
@@ -121,6 +125,8 @@ function pcMqtt() {
             $('#check_pass_count'+i).text(passLuggage);
             $('#check_open_count'+i).text(openLuggage);
             $('#check_total_count'+i).text(totalLuggage);
+            $('#check_time'+i).text(hours+'h '+minutes+'m '+seconds+'s');
+
             if(jsonData.data[i].pcStatus != $('#check_status'+i).val()){
                 $('#check_status'+i).val(jsonData.data[i].pcStatus);
 
@@ -214,8 +220,8 @@ function pcMqtt() {
 
 function xrayMqtt() {
     // MQTT 클라이언트 생성
-    let host = "broker.emqx.io";
-    let port = 8083
+    let host = window.location.hostname
+    let port = 8882
     let clientId = "clientId-" + Math.random().toString(16).substr(2, 8);
     let client = new Paho.MQTT.Client(host, port, clientId)
 
@@ -368,7 +374,6 @@ function xrayMqtt() {
         if(value2<10) value2 = "0"+value2
         $('#waiting_count_xray').text(value2);
         $('#xray_size').text(count+'대');
-        console.log("Xray 데이터")
         console.log(jsonData);
     };
 
@@ -387,8 +392,8 @@ function xrayMqtt() {
 
 function trsMqtt() {
     // MQTT 클라이언트 생성
-    let host = "broker.emqx.io";
-    let port = 8083
+    let host = window.location.hostname
+    let port = 8882
     let clientId = "clientId-" + Math.random().toString(16).substr(2, 8);
     let client = new Paho.MQTT.Client(host, port, clientId)
 
@@ -479,20 +484,20 @@ function trsMqtt() {
             $('#trs_total_count'+i).text(totalLuggage);
             if(jsonData.data[i].pcStatus != $('#trs_status'+i).val()){
                 $('#trs_status'+i).val(jsonData.data[i].pcStatus);
-                if(jsonData.data[i].pcStatus == 'start'){
+                if(jsonData.data[i].pcStatus == 'working'){
                     if($('#trs_div'+i).hasClass('waiting')){
                         $('#trs_div'+i).removeClass('waiting')
                         $('#trs_div'+i).addClass('reading')
-                        $('#xray_state_info'+i).children().eq(0).attr('src','/storg/img/reading_icon.png');
-                        $('#xray_state_info'+i).children().eq(1).text('WORKING');
+                        $('#trs_state_info'+i).children().eq(0).attr('src','/storg/img/reading_icon.png');
+                        $('#trs_state_info'+i).children().eq(1).text('WORKING');
 
                     }
                 } else{
                     if($('#trs_div'+i).hasClass('reading')){
                         $('#trs_div'+i).removeClass('reading')
                         $('#trs_div'+i).addClass('waiting')
-                        $('#xray_state_info'+i).children().eq(0).attr('src','/storg/img/waiting_icon.png');
-                        $('#xray_state_info'+i).children().eq(1).text('WAITING');
+                        $('#trs_state_info'+i).children().eq(0).attr('src','/storg/img/waiting_icon.png');
+                        $('#trs_state_info'+i).children().eq(1).text('WAITING');
                     }
                 }
             }
@@ -552,6 +557,218 @@ function trsMqtt() {
         },
         onFailure: function() {
             console.log("failed to connect");
+        }
+    });
+}
+
+function adexMqtt() {
+    // MQTT 클라이언트 생성
+    let host = window.location.hostname
+    // let host = "http://xraysite.kr:";
+    let port = 8882
+    let clientId = "clientId-" + Math.random().toString(16).substr(2, 8);
+    let client = new Paho.MQTT.Client(host, port, clientId)
+
+    client.onConnectionLost = function(responseObject) {
+        console.log("onConnectionLost:" + responseObject.errorMessage);
+    };
+
+    client.onMessageArrived = function(message) {
+        let now_value = $('#now_value').val();
+        $.ajax({
+            url: 'down',
+            type: 'get',
+            success:function (data){
+                $.ajax({
+                    url: 'status',
+                    type: 'get',
+                    success:function (data){
+                        $('#luggage_count').text(data.luggageCount)
+                        $('#detection_count').text(data.detectionCount)
+                    }
+                    
+                });
+                $.ajax({
+                    url: 'lid',
+                    type: 'get',
+                    success:function (data){
+                        $('#mLid').text(data)
+                    }
+                });
+                $.ajax({
+                    url: 'topTen',
+                    type: 'get',
+                    success:function (data){
+                        let count = 1;
+                        data.forEach(function (item) {
+                            if($('#top'+count).length==0){
+                                let li = $('<li></li>')
+                                let labelRank = $('<span class="top10_count"></span>')
+                                let labelName = $('<span class="top10_name"></span>');
+                                labelRank.text(count+ '. ')
+                                labelName.attr('id',  'top'+count)
+                                labelName.text(item.labelName +' '+ item.labelCount)
+                                $('.adex_top10').append(li)
+                                li.append(labelRank).append(labelName)
+                            }
+                            $('#top'+count).text(item.labelName +' '+ item.labelCount)
+                            count++;
+                        });
+                    }
+                });
+                $.ajax({
+                    url: 'subImage',
+                    type: 'get',
+                    success:function (data){
+                        let count = 1;
+                        const bfCount = $('.Image_container').children().length/2;
+                        if(bfCount != data.length){
+                            if(bfCount > data.length){
+                                console.log("bfCount : "+bfCount)
+                                console.log("nowLength :  : "+data.length)
+                                for(let i=bfCount; i>bfCount - (bfCount-data.length);i--){
+                                    $('#sub'+i).remove();
+                                    $('#main'+i).remove();
+                                }
+                                data.forEach(function (item) {
+                                    $('#main'+count).attr({
+                                        'src': '/adex_image/' + item.name
+                                    });
+
+                                    // 서브 이미지 태그 생성
+                                    if ($("#funOn").is(":checked")) {
+                                        $('#sub'+count).attr({
+                                            'src': '/adex_image/bbox/' + item.name
+                                        });
+                                    }
+                                    else{
+                                        $('#sub'+count).attr({
+                                            'src': '/adex_image/' + item.name
+                                        });
+                                    }
+                                    if(count ==1){
+                                        if ($("#funOn").is(":checked")) {
+                                            $('#main_image').attr('src','/adex_image/'+item.name);
+                                            $('#sub_image').attr('src','/adex_image/bbox/'+item.name);
+                                        } else{
+                                            $('#main_image').attr('src','/adex_image/'+item.name);
+                                            $('#sub_image').attr('src','/adex_image/'+item.name);
+                                        }
+                                    }
+                                    count++;
+                                });
+                            }
+                            if(bfCount < data.length){
+                                for(let i=bfCount+1;i<=data.length;i++){
+                                    let subImg = $("<img id='sub"+i+"' value="+i+" class='adex_sub_image'/>");
+                                    let mainImg = $("<img id='main"+i+"' value="+i+" class='adex_main_image' />");
+                                    $('.Image_container').append(subImg).append(mainImg);
+                                }
+                                data.forEach(function (item) {
+                                    $('#main'+count).attr({
+                                        'src': '/adex_image/' + item.name
+                                    });
+
+                                    if ($("#funOn").is(":checked")) {
+                                        $('#sub'+count).attr({
+                                            'src': '/adex_image/bbox/' + item.name
+                                        });
+                                    }else{
+                                        $('#sub'+count).attr({
+                                            'src': '/adex_image/' + item.name
+                                        });
+
+                                    }
+                                    if(count ==1){
+                                        if ($("#funOn").is(":checked")) {
+                                            $('#main_image').attr('src','/adex_image/'+item.name);
+                                            $('#sub_image').attr('src','/adex_image/bbox/'+item.name);
+                                        } else{
+                                            $('#main_image').attr('src','/adex_image/'+item.name);
+                                            $('#sub_image').attr('src','/adex_image/'+item.name);
+                                        }
+                                    }
+                                    // 서브 이미지 태그 생성
+                                    count++;
+                                });
+                            }
+                        } else{
+                            data.forEach(function (item) {
+                                $('#main'+count).attr({
+                                    'src': '/adex_image/' + item.name
+                                });
+
+                                // 서브 이미지 태그 생성
+                                if ($("#funOn").is(":checked")) {
+                                    $('#sub'+count).attr({
+                                        'src': '/adex_image/bbox/' + item.name
+                                    });
+                                } else{
+                                    $('#sub'+count).attr({
+                                        'src': '/adex_image/' + item.name
+                                    });
+                                }
+                                if ($("#funOn").is(":checked")) {
+                                    if(count ==now_value){
+                                        $('#main_image').attr('src','/adex_image/'+item.name);
+                                        $('#sub_image').attr('src','/adex_image/bbox/'+item.name);
+                                    }
+                                }
+                                else{
+                                    if(count ==now_value){
+                                        $('#main_image').attr('src','/adex_image/'+item.name);
+                                        $('#sub_image').attr('src','/adex_image/'+item.name);
+                                    }
+                                }
+                                count++;
+                            });
+                        }
+                    }
+                })
+                let jsonData = JSON.parse(message.payloadString);
+                console.log("전체 json : "+jsonData.lid)
+            }
+        });
+    };
+
+    // MQTT 브로커에 연결
+    client.connect({
+        onSuccess: function() {
+            console.log("connected");
+            // cubox topic을 구독
+            client.subscribe("adex");
+        },
+        onFailure: function() {
+            console.log("failed to connect");
+        }
+    });
+}
+
+
+function publishMqttMessage() {
+    // MQTT 클라이언트 생성
+    let host = window.location.hostname
+    let port = 8882
+    let clientId = "clientId-" + Math.random().toString(16).substr(2, 8);
+    let topic = "adex"; // 원하는 MQTT 주제를 지정하세요.
+    let message = { lid: "123123qwe" }; // 전송할 메시지를 지정하세요.
+
+    let client = new Paho.MQTT.Client(host, port, clientId);
+
+    // 연결 시도
+    client.connect({
+        onSuccess: function() {
+            console.log("Connected to MQTT broker");
+
+            // 메시지 게시
+            let mqttMessage = new Paho.MQTT.Message(JSON.stringify(message));
+            mqttMessage.destinationName = topic;
+
+            client.send(mqttMessage);
+            console.log("Message published to topic: " + topic);
+        },
+        onFailure: function() {
+            console.log("Failed to connect to MQTT broker");
         }
     });
 }

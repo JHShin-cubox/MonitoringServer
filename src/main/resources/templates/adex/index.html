@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>통합관리 시스템</title>
+    <link rel="stylesheet" href="/storg/css/swiper-bundle.css" />
+    <link rel="stylesheet" href="/storg/css/adex.css">
+    <script>
+        //mqtt 불러오기
+        $(function(){
+
+        })
+    </script>
+</head>
+<body>
+    <main layout:fragment="content">
+
+        <div class="main_content">
+            <div class="wrapper">
+                <div class="monitor_content content_wrap">
+                    <div class="header monitor_header">
+                        <div class="header_wrap">
+<!--                            <p id="title" class="tittle">X-Ray 판독 시스템</p>-->
+                            <img class="adex_image" src="/storg/img/main_logo_cubox.png">
+<!--                            <p class="tag_tittle">통합관리 시스템</p>-->
+                        </div>
+                        <div class="button_wrapper">
+                            <div class="page_btn" onclick="location.href='/adex/list'" type="button"><img src="/storg/img/list_icon.png"></div>
+                        </div>
+                    </div>
+                    <div class="grid_wrapper">
+                        <div class="a_main_container">
+                            <div class="a_wrapper_left">
+                                <div class="adex_image_wrapper">
+                                    <p class="main_title">원본 이미지</p>
+                                    <img th:if="${recentImage!=null}" id="main_image" th:src="'/adex_image/'+${recentImage.name}">
+                                    <img th:if="${recentImage==null}" id="main_image" src="/storg/img/service_ready.png">
+                                </div>
+                            </div>
+                            <div class="a_wrapper_right">
+                                <div class="adex_image_wrapper">
+                                    <p class="main_title">자동판독 이미지 <input type="checkbox" id="funOn" onclick="tagDetection()" checked></p>
+                                    <img th:if="${recentImage!=null}" id="sub_image" th:src="'/adex_image/bbox/'+${recentImage.name}">
+                                    <img th:if="${recentImage==null}" id="sub_image" src="/storg/img/service_ready.png">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="Image_container">
+                            <th:block th:if="${recentImage!=null}" th:each="list : ${subImage}">
+                                <img th:id="sub+${listStat.count}" th:value="${listStat.count}" class="adex_sub_image" th:src="'/adex_image/bbox/'+${list.name}">
+                                <img th:id="main+${listStat.count}" th:value="${listStat.count}" class="adex_main_image" th:src="'/adex_image/'+${list.name}">
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+                <div class="status_content content_wrap">
+                    <div class="status_header header adex_header">
+                        <p class="status_tittle">판독 상황</p>
+                        <p class="date">[[${#calendars.format(#calendars.createNow(), 'YY년 MM월 dd일 HH시 mm분 ss초')}]]</p>
+                    </div>
+                    <div class="status_wrapper">
+                        <div class="status" style="margin-top: 20px">
+                            <div class="adex_status_wrapper noflex">
+                                <span class="status_title">수하물 아이디</span>
+                                <div>
+                                    <span id="mLid" class="text-right status_num" style="font-size: 22px;">[[${lastLid}]]</span>
+                                </div>
+                            </div>
+                            <div class="adex_status_wrapper">
+                                <span class="status_title">판독수</span>
+                                <div>
+                                    <span id="luggage_count" class="text-right status_num">[[${status.luggageCount}]]</span>
+                                    <span class="adex_unit">회</span>
+                                </div>
+                            </div>
+                            <div class="adex_status_wrapper">
+                                <span class="status_title">위해 물품</span>
+                                <div>
+                                    <span id="detection_count" class="text-right status_num">[[${status.detectionCount}]]</span>
+                                    <span class="adex_unit">개</span>
+                                </div>
+                            </div>
+                            <div class="adex_status_wrapper">
+                                <ul class="adex_top10">
+                                    <p class="status_title status_top10">Top 10</p>
+                                    <th:block th:each="list : ${topTen}">
+                                        <li class="top10 status_top10_li">
+                                            <span class="top10_count">[[${listStat.count}]].</span>
+                                            <span th:id="top+${listStat.count}" class="top10_name">[[${list.labelName}]] [[${list.labelCount}]]</span>
+                                        </li>
+                                    </th:block>
+                                </ul>
+                            </div>
+                            <input id="now_value" type="hidden" value=1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(function(){
+                let now_value = $('#now_value').val();
+                $('#sub'+(Number(now_value))).addClass("active");
+
+                $(document).on("click",'.adex_sub_image',function(){
+                    now_value = $(this).attr("value");
+                    console.log(now_value);
+                    $('.adex_sub_image').each(function(){
+                        $('.adex_sub_image').removeClass("active");
+                    })
+                    $('#sub'+(now_value)).addClass("active");
+                    $('#main_image').attr('src',$('#main'+(now_value)).attr('src'))
+                    $('#sub_image').attr('src',$('#sub'+(now_value)).attr('src'))
+                })
+                adexMqtt();
+
+
+                $(document).keydown(function(e) {
+                    // switch(e.which) {
+                    //     case 37: // 왼쪽 방향키
+                    //         if(now_value >1){
+                    //             $('.adex_sub_image').each(function(){
+                    //                 $('.adex_sub_image').removeClass("active");
+                    //             })
+                    //             $('#sub'+(Number(now_value)-1)).addClass("active")
+                    //             $('#main_image').attr('src',$('#main'+((Number(now_value)-1))).attr('src'))
+                    //             $('#sub_image').attr('src',$('#sub'+((Number(now_value)-1))).attr('src'))
+                    //             now_value--;
+                    //         }
+                    //         break;
+                    //     case 39: // 오른쪽 방향키
+                    //         if(now_value < $('.adex_sub_image').length){
+                    //             let subID = now_value + 1
+                    //             if($('#sub'+subID).length>0){
+                    //                 $('.adex_sub_image').each(function(){
+                    //                     $('.adex_sub_image').removeClass("active");
+                    //                 })
+                    //                 $('#sub'+subID).addClass("active")
+                    //                 $('#main_image').attr('src',$('#main'+(now_value)).attr('src'))
+                    //                 $('#sub_image').attr('src',$('#sub'+(now_value)).attr('src'))
+                    //                 now_value++;
+                    //             }
+                    //         }
+                    //         break;
+                    // }
+                });
+            })
+
+            function tagDetection(){
+                if ($("#funOn").is(":checked")) {
+                    let bfSrc = $('#sub_image').attr('src')
+                    let parts = bfSrc.split('/');
+                    $('#sub_image').attr('src','/adex_image/bbox/'+parts[2]);
+
+                    $('.adex_sub_image').each(function(){
+                        let subSrc = $(this).attr('src')
+                        let subPart = subSrc.split('/');
+                        $(this).attr('src','/adex_image/bbox/'+subPart[2])
+                    })
+
+                } else{
+                    let bfSrc = $('#sub_image').attr('src')
+                    let parts = bfSrc.split('/');
+                    $('#sub_image').attr('src','/adex_image/'+parts[3]);
+                    $('.adex_sub_image').each(function(){
+                        let subSrc = $(this).attr('src')
+                        let subPart = subSrc.split('/');
+                        $(this).attr('src','/adex_image/'+subPart[3])
+                    })
+                }
+            }
+
+        </script>
+        <script>
+
+        </script>
+    </main>
+</body>
+</html>
