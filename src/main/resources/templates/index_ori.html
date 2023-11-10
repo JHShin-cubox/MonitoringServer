@@ -137,14 +137,14 @@
                                                                     <div class="monitor_info ">
                                                                         <p  class="name_tag">통과수하물</p>
                                                                         <div class="bar">
-                                                                            <progress th:id="'check_pass_progress'+${statusListStat.index}" th:class="${statusList.status == 'working' ? 'progress workingP' : 'progress waitingP'}" min="0" max="100" th:value="${statusList.totalLuggage == 0 ? 0 : statusList.passLuggage / statusList.totalLuggage * 100}"></progress>
+                                                                            <progress th:title="${statusList.passLuggage}" th:id="'check_pass_progress'+${statusListStat.index}" th:class="${statusList.status == 'working' ? 'progress workingP' : 'progress waitingP'}" min="0" max="100" th:value="${statusList.totalLuggage == 0 ? 0 : (statusList.passLuggage*1.0) / (statusList.totalLuggage*1.0)*100}"></progress>
                                                                         </div>
                                                                         <p th:id="'check_pass_count'+${statusListStat.index}" class="num_tag">[[${statusList.passLuggage}]]</p>
                                                                     </div>
                                                                     <div class="monitor_info">
                                                                         <p class="name_tag">개봉수하물</p>
                                                                         <div class="bar">
-                                                                            <progress th:id="'check_open_progress'+${statusListStat.index}" th:class="${statusList.status == 'working' ? 'progress workingP' : 'progress waitingP'}" min="0" max="100" th:value="${statusList.totalLuggage == 0 ? 0 : statusList.openLuggage / statusList.totalLuggage * 100}"></progress>
+                                                                            <progress th:id="'check_open_progress'+${statusListStat.index}" th:class="${statusList.status == 'working' ? 'progress workingP' : 'progress waitingP'}" min="0" max="100" th:value="${statusList.totalLuggage == 0 ? 0 : (statusList.openLuggage*1.0) / (statusList.totalLuggage*1.0)*100}"></progress>
                                                                         </div>
                                                                         <p th:id="'check_open_count'+${statusListStat.index}" class="num_tag">[[${statusList.openLuggage}]]</p>
                                                                     </div>
@@ -388,7 +388,7 @@
                         //각 슬라이드의 기능은 동일
                         //기존 상태값과 장비수를 숨기고 각 슬라이드의 장비의 상태값과 장비수를 표츌
                         //조건문 마다 슬라이드 번호
-                        if(swiper.realIndex == 0){
+                        if(swiper.realIndex == 1){
                             $('#waiting_count_checkPc').show();
                             $('#waiting_count_xray').hide();
                             $('#waiting_count_trs').hide();
@@ -416,13 +416,13 @@
                             $('#check_pcR').css('stroke-dashoffset',dashoffset_Reading);
                             $('#check_pcW').css('stroke-dashoffset',dashoffset_Waiting);
 
-                            $('#title').text('TRS');
+                            $('#title').text('Check PC');
                             $('#status_1st').text('WORKING');
                             $('#status_2nd').text('WAITING');
                             $('#desc_1st').text('WORKING');
                             $('#desc_2nd').text('WAITING');
                             $('.grid_wrapper').scrollTop(0);
-                        }else if(swiper.realIndex == 1){
+                        }else if(swiper.realIndex == 2){
                             $('#waiting_count_checkPc').hide();
                             $('#waiting_count_xray').show();
                             $('#waiting_count_trs').hide();
@@ -450,7 +450,7 @@
                             $('#xrayR').css('stroke-dashoffset',dashoffset_Reading);
                             $('#xrayW').css('stroke-dashoffset',dashoffset_Waiting);
 
-                            $('#title').text('Check PC');
+                            $('#title').text('X-Ray');
                             $('#status_1st').text('WORKING');
                             $('#status_2nd').text('WAITING');
                             $('#desc_1st').text('WORKING');
@@ -484,7 +484,7 @@
                             dashoffset_Waiting = CIRCUMFERENCE * (1 - (Number($('#waiting_percent_trs').attr('value'))/100));
                             $('#trsR').css('stroke-dashoffset',dashoffset_Reading);
                             $('#trsW').css('stroke-dashoffset',dashoffset_Waiting);
-                            $('#title').text('X-Ray');
+                            $('#title').text('TRS');
                             $('#status_1st').text('WORKING');
                             $('#status_2nd').text('WAITING');
                             $('#desc_1st').text('WORKING');

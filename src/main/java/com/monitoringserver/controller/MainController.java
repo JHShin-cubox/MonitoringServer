@@ -78,19 +78,25 @@ public class MainController {
         else trsRCount = trsRCountO.toString();
 
 
-        model.addAttribute("viewerInfo",deviceInfoService.getViewerInfo());
+        var xrayInfo = deviceInfoService.getXrayInfo();
+        var trsInfo = deviceInfoService.getTrsInfo();
+        var viewerInfo = deviceInfoService.getViewerInfo();
+
+        System.out.println(viewerInfo);
+
+        model.addAttribute("viewerInfo",viewerInfo);
         model.addAttribute("viewerWaitingCount",viewerWCount);
         model.addAttribute("viewerReadingCount",viewerRCount);
         model.addAttribute("viewerWaitingPercent", viewerWaitingPercent);
         model.addAttribute("viewerReadingPercent", viewerReadingPercent);
 
-        model.addAttribute("xrayInfo",deviceInfoService.getXrayInfo());
+        model.addAttribute("xrayInfo",xrayInfo);
         model.addAttribute("xrayWaitingCount",xrayWCount);
         model.addAttribute("xrayReadingCount",xrayRCount);
         model.addAttribute("xrayWaitingPercent", xrayWaitingPercent);
         model.addAttribute("xrayReadingPercent", xrayReadingPercent);
 
-        model.addAttribute("trsInfo",deviceInfoService.getTrsInfo());
+        model.addAttribute("trsInfo",trsInfo);
         model.addAttribute("trsWaitingCount",trsWCount);
         model.addAttribute("trsReadingCount",trsRCount);
         model.addAttribute("trsWaitingPercent", trsWaitingPercent);
@@ -189,7 +195,6 @@ public class MainController {
         model.addAttribute("trsReadingPercent", trsReadingPercent);
 
         model.addAttribute("settings", deviceInfoService.getSettings());
-        System.out.println(deviceInfoService.getXrayInfo());
         return "adex/index";
     }
 
