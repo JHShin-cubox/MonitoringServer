@@ -21,6 +21,7 @@ spring:
 #    url: jdbc:mariadb://pdteam-dev-db.cvl9xeh1bwxz.ap-northeast-2.rds.amazonaws.com:3306/divisionserver
 #    url : jdbc:mariadb://172.16.150.32:3306/divisionserver
 #    url : jdbc:mariadb://172.16.150.21:3306/divisionserver
+#    url : jdbc:mariadb://192.168.0.49:3306/divisionserver
     url : jdbc:mariadb://localhost/divisionserver
     driver-class-name: org.mariadb.jdbc.Driver
     username: admin
