@@ -601,17 +601,36 @@ function adexMqtt() {
                     success:function (data){
                         let count = 1;
                         data.forEach(function (item) {
-                            if($('#top'+count).length==0){
-                                let li = $('<li></li>')
-                                let labelRank = $('<span class="top10_count"></span>')
-                                let labelName = $('<span class="top10_name"></span>');
-                                labelRank.text(count+ '. ')
-                                labelName.attr('id',  'top'+count)
-                                labelName.text(item.labelName +' '+ item.labelCount)
-                                $('.adex_top10').append(li)
-                                li.append(labelRank).append(labelName)
+                            if($('#label_name'+count).length==0){
+
+                                let div1 = $('<div class="item_list_container list_active"></li>');
+
+                                let labelName = $('<p class="item_name"></p>');
+                                labelName.attr('id','label_name'+count);
+                                labelName.text(item.labelName)
+                                let div1_1 = $('<div class="item_bar"></li>');
+
+                                let div1_1_1 = $('<div class="item_bar"></li>');
+
+                                let progress = $('<progress class="progress workingP" min="0" max="100"></progress>');
+                                progress.attr('value',item.labelRatio);
+                                progress.attr('id','prg'+count);
+
+                                let labelCount = $('<p></p>');
+                                labelCount.attr('value',item.labelCount);
+                                labelCount.attr('id','label_count'+count)
+                                labelCount.text(item.labelCount);
+
+                                $('.item_list_wrapper').append(div1)
+                                div1.append(labelName).append(div1_1).append(labelCount);
+                                div1_1.append(div1_1_1);
+                                div1_1_1.append(progress);
+
                             }
-                            $('#top'+count).text(item.labelName +' '+ item.labelCount)
+                            $('#label_name'+count).text(item.labelName);
+                            $('#label_count'+count).text(item.labelCount+'개');
+                            $('#prg'+count).val(item.labelRatio);
+
                             count++;
                         });
                     }
@@ -621,14 +640,14 @@ function adexMqtt() {
                     type: 'get',
                     success:function (data){
                         let count = 1;
-                        const bfCount = $('.Image_container').children().length/2;
+                        const bfCount = $('.thumbnail_img').length;
+                        console.log(bfCount)
                         if(bfCount != data.length){
                             if(bfCount > data.length){
-                                console.log("bfCount : "+bfCount)
-                                console.log("nowLength :  : "+data.length)
+                                console.log("보내는게 적을때")
                                 for(let i=bfCount; i>bfCount - (bfCount-data.length);i--){
-                                    $('#sub'+i).remove();
-                                    $('#main'+i).remove();
+                                    $('#sub'+i).parent().remove();
+                                    // $('#main'+i).remove();
                                 }
                                 data.forEach(function (item) {
                                     $('#main'+count).attr({
@@ -659,10 +678,14 @@ function adexMqtt() {
                                 });
                             }
                             if(bfCount < data.length){
+                                console.log("보내는게 많을때")
                                 for(let i=bfCount+1;i<=data.length;i++){
-                                    let subImg = $("<img id='sub"+i+"' value="+i+" class='adex_sub_image'/>");
-                                    let mainImg = $("<img id='main"+i+"' value="+i+" class='adex_main_image' />");
-                                    $('.Image_container').append(subImg).append(mainImg);
+
+                                    let div1 = $("<div class='thumbnail_img'/></div>")
+                                    let subImg = $("<img id='sub"+i+"' value="+i+" />");
+                                    let mainImg = $("<img id='main"+i+"' value="+i+" style='display:none' />");
+                                    $('.thumbnail_container').append(div1);
+                                    div1.append(subImg).append(mainImg);
                                 }
                                 data.forEach(function (item) {
                                     $('#main'+count).attr({
@@ -693,6 +716,7 @@ function adexMqtt() {
                                 });
                             }
                         } else{
+                            console.log("보내는게 같을때")
                             data.forEach(function (item) {
                                 $('#main'+count).attr({
                                     'src': '/adex_image/' + item.name

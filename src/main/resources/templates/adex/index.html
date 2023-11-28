@@ -21,37 +21,61 @@
             <div class="wrapper">
                 <div class="monitor_content content_wrap">
                     <div class="header monitor_header">
-                        <div class="header_wrap">
-<!--                            <p id="title" class="tittle">X-Ray 판독 시스템</p>-->
-                            <img class="adex_image" src="/storg/img/main_logo_cubox.png">
-<!--                            <p class="tag_tittle">통합관리 시스템</p>-->
+                        <div class="header_left">
+                            <div class="icn_logo">
+                                <img class="adex_image" src="/storg/img/main_logo_inc.png">
+                            </div>
+                            <div class="button_container">
+                                <span>자동 판독</span>
+                                <div class="button_wrapper">
+                                    <label class="switch">
+                                        <input type="checkbox"  id="funOn" onclick="tagDetection()" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
-                        <div class="button_wrapper">
-                            <div class="page_btn" onclick="location.href='/adex/list'" type="button"><img src="/storg/img/list_icon.png"></div>
+                        <div class="id_num_container">
+                            <div class="id_tag_name">
+                                <p>수하물 아이디</p>
+                            </div>
+                            <div class="id_num">
+                                <p id="mLid" class="text-right status_num" style="font-size: 22px;" th:if="${lastLid}!=null">[[${lastLid}]]</p>
+                                <p id="mLid" class="text-right status_num" style="font-size: 22px;" th:if="${lastLid} == null">----------</p>
+                            </div>
                         </div>
                     </div>
                     <div class="grid_wrapper">
-                        <div class="a_main_container">
-                            <div class="a_wrapper_left">
-                                <div class="adex_image_wrapper">
-                                    <p class="main_title">원본 이미지</p>
+                        <div class="image_container">
+                            <div class="left_image image">
+                                <div class="image_title">
+                                    <span>원본 이미지</span>
+                                </div>
+                                <div class="image_wrapper">
                                     <img th:if="${recentImage!=null}" id="main_image" th:src="'/adex_image/'+${recentImage.name}">
                                     <img th:if="${recentImage==null}" id="main_image" src="/storg/img/service_ready.png">
+
                                 </div>
                             </div>
-                            <div class="a_wrapper_right">
-                                <div class="adex_image_wrapper">
-                                    <p class="main_title">자동판독 이미지 <input type="checkbox" id="funOn" onclick="tagDetection()" checked></p>
+                            <div class="right_image image">
+                                <div class="image_title">
+                                    <span>자동판독 이미지</span>
+                                </div>
+                                <div class="image_wrapper">
                                     <img th:if="${recentImage!=null}" id="sub_image" th:src="'/adex_image/bbox/'+${recentImage.name}">
                                     <img th:if="${recentImage==null}" id="sub_image" src="/storg/img/service_ready.png">
                                 </div>
                             </div>
                         </div>
-                        <div class="Image_container">
-                            <th:block th:if="${recentImage!=null}" th:each="list : ${subImage}">
-                                <img th:id="sub+${listStat.count}" th:value="${listStat.count}" class="adex_sub_image" th:src="'/adex_image/bbox/'+${list.name}">
-                                <img th:id="main+${listStat.count}" th:value="${listStat.count}" class="adex_main_image" th:src="'/adex_image/'+${list.name}">
-                            </th:block>
+                        <div class="thumbnail">
+                            <div class="thumbnail_container">
+                                <th:block th:if="${recentImage!=null}" th:each="list : ${subImage}">
+                                    <div class="thumbnail_img">
+                                        <img th:id="sub+${listStat.count}" th:value="${listStat.count}" th:src="'/adex_image/bbox/'+${list.name}">
+                                        <img style="display: none" th:id="main+${listStat.count}" th:value="${listStat.count}" th:src="'/adex_image/'+${list.name}">
+                                    </div>
+                                </th:block>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -61,37 +85,63 @@
                         <p class="date">[[${#calendars.format(#calendars.createNow(), 'YY년 MM월 dd일 HH시 mm분 ss초')}]]</p>
                     </div>
                     <div class="status_wrapper">
-                        <div class="status" style="margin-top: 20px">
-                            <div class="adex_status_wrapper noflex">
-                                <span class="status_title">수하물 아이디</span>
-                                <div>
-                                    <span id="mLid" class="text-right status_num" style="font-size: 22px;">[[${lastLid}]]</span>
+                        <div class="status">
+                            <div class="label_container">
+                                <div class="label">
+                                    <div class="top_line">
+                                        <div class="label_wrapper">
+                                            <span>판독수</span>
+                                        </div>
+                                    </div>
+                                    <div class="bottom_line">
+                                        <div class="label_wrapper">
+                                            <span id="luggage_count" class="text-right status_num">[[${status.luggageCount}]]</span>
+                                            <span class="adex_unit">회</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="label">
+                                    <div class="top_line">
+                                        <div class="label_wrapper">
+                                            <span>위해 물품</span>
+                                        </div>
+
+                                    </div>
+                                    <div class="bottom_line">
+                                        <div class="label_wrapper">
+                                            <span id="detection_count" class="text-right status_num">[[${status.detectionCount}]]</span>
+                                            <span class="adex_unit">개</span>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-                            <div class="adex_status_wrapper">
-                                <span class="status_title">판독수</span>
-                                <div>
-                                    <span id="luggage_count" class="text-right status_num">[[${status.luggageCount}]]</span>
-                                    <span class="adex_unit">회</span>
+
+
+
+
+                            <div class="graph top_graph">
+                                <div class="status_variable">
+                                    <p id="status_1st" class="status_1st">위해 물품</p>
+                                    <p class="status_2nd">높은순</p>
                                 </div>
-                            </div>
-                            <div class="adex_status_wrapper">
-                                <span class="status_title">위해 물품</span>
-                                <div>
-                                    <span id="detection_count" class="text-right status_num">[[${status.detectionCount}]]</span>
-                                    <span class="adex_unit">개</span>
+                                <div class="graph_container">
+                                    <div class="item_list_wrapper">
+                                        <th:block th:each="list : ${topTen}">
+                                            <div class="item_list_container list_active">
+                                                <div class="item_list">
+                                                    <p th:id="label_name+${listStat.count}" class="item_name">[[${list.labelName}]]</p>
+                                                    <div class="item_bar">
+                                                        <div class="bar">
+                                                            <progress th:id="prg+${listStat.count}" class="progress workingP" min="0" max="100" th:value="${list.getLabelRatio()}"></progress>
+                                                        </div>
+                                                    </div>
+                                                    <p th:id="label_count+${listStat.count}">[[${list.labelCount}]]개</p>
+                                                </div>
+                                            </div>
+                                        </th:block>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="adex_status_wrapper">
-                                <ul class="adex_top10">
-                                    <p class="status_title status_top10">Top 10</p>
-                                    <th:block th:each="list : ${topTen}">
-                                        <li class="top10 status_top10_li">
-                                            <span class="top10_count">[[${listStat.count}]].</span>
-                                            <span th:id="top+${listStat.count}" class="top10_name">[[${list.labelName}]] [[${list.labelCount}]]</span>
-                                        </li>
-                                    </th:block>
-                                </ul>
                             </div>
                             <input id="now_value" type="hidden" value=1>
                         </div>
@@ -104,11 +154,11 @@
                 let now_value = $('#now_value').val();
                 $('#sub'+(Number(now_value))).addClass("active");
 
-                $(document).on("click",'.adex_sub_image',function(){
-                    now_value = $(this).attr("value");
+                $(document).on("click",'.thumbnail_img',function(){
+                    now_value = $(this).children().eq(0).attr("value");
                     console.log(now_value);
-                    $('.adex_sub_image').each(function(){
-                        $('.adex_sub_image').removeClass("active");
+                    $('.thumbnail_img').each(function(){
+                        $('.thumbnail_img').children().removeClass("active");
                     })
                     $('#sub'+(now_value)).addClass("active");
                     $('#main_image').attr('src',$('#main'+(now_value)).attr('src'))
@@ -154,20 +204,22 @@
                     let parts = bfSrc.split('/');
                     $('#sub_image').attr('src','/adex_image/bbox/'+parts[2]);
 
-                    $('.adex_sub_image').each(function(){
-                        let subSrc = $(this).attr('src')
-                        let subPart = subSrc.split('/');
-                        $(this).attr('src','/adex_image/bbox/'+subPart[2])
+                    $('.thumbnail_img').each(function(){
+                        let subSrc = $(this).children().eq(0).attr('src')
+                        let subPart = (subSrc||'').split('/');
+                        $(this).children().eq(0).attr('src','/adex_image/bbox/'+subPart[2])
+                        $(this).children().eq(1).attr('src','/adex_image/'+subPart[2])
                     })
 
                 } else{
                     let bfSrc = $('#sub_image').attr('src')
                     let parts = bfSrc.split('/');
                     $('#sub_image').attr('src','/adex_image/'+parts[3]);
-                    $('.adex_sub_image').each(function(){
-                        let subSrc = $(this).attr('src')
-                        let subPart = subSrc.split('/');
-                        $(this).attr('src','/adex_image/'+subPart[3])
+                    $('.thumbnail_img').each(function(){
+                        let subSrc = $(this).children().eq(0).attr('src')
+                        let subPart = (subSrc||'').split('/');
+                        $(this).children().eq(0).attr('src','/adex_image/'+subPart[3])
+                        $(this).children().eq(1).attr('src','/adex_image/'+subPart[3])
                     })
                 }
             }

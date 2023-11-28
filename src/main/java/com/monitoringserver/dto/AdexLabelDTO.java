@@ -12,4 +12,5 @@ import lombok.ToString;
 public class AdexLabelDTO {
     private String labelName;
     private Integer labelCount;
+    private Double labelRatio;
 }

@@ -14,7 +14,10 @@
     </insert>
 
     <select id="getRecentImage" resultType="com.monitoringserver.dto.AdexDTO">
-        select name, luggage_id, reg_date from adex_images where reg_date between date(now()) and date(now())+1 group by luggage_id order by reg_date desc limit 1
+        select name, luggage_id, reg_date
+        from adex_images
+        where reg_date between date(now()) and date(now())+1
+        group by luggage_id order by reg_date desc limit 1
     </select>
 
     <select id="duplicateCheck" resultType="java.lang.String">
@@ -28,21 +31,56 @@
                 (select luggage_code from luggage where reg_date between date(now()) and date(now())+1) as luggageCount
     </select>
     <select id="getSumImage" resultType="com.monitoringserver.dto.AdexDTO">
-        select name from adex_images where luggage_id = (select luggage_id from adex_images order by reg_date desc limit 1) and reg_date between date(now()) and date(now())+1 limit 9
+        select name
+        from adex_images
+        where luggage_id = (select luggage_id from adex_images order by reg_date desc limit 1)
+        and reg_date between date(now()) and date(now())+1
+        limit 9
     </select>
 
+
+
     <select id="getTop10" resultType="com.monitoringserver.dto.AdexLabelDTO">
-        select B.level2 as label_name, count(*) as label_count
-        from xray_analyze_statistics A
-                 join ai_detection B on A.detection_id = B.label_id
-        where B.level2 is not null
-          and A.reg_date between date(now()) and date(now())+1
-        group by B.level2
-        order by label_count desc
+        WITH max_label_count AS (
+            SELECT MAX(label_count) AS max_count
+            FROM (
+                SELECT B.level2 AS label_name, COUNT(*) AS label_count
+                FROM xray_analyze_statistics A
+                JOIN ai_detection B ON A.detection_id = B.label_id
+                WHERE B.level2 IS NOT NULL
+                and A.reg_date between date(now()) and date(now())+1
+                GROUP BY B.level2
+            ) max_counts
+        )
+
+        SELECT B.level2 AS label_name,
+            COUNT(*) AS label_count,
+            CASE WHEN 10 >= COUNT(*) * 100.0 / (SELECT max_count FROM max_label_count) then 10
+            else ROUND(COUNT(*) * 100.0 / (SELECT max_count FROM max_label_count), 2) end AS label_ratio
+        FROM xray_analyze_statistics A
+            JOIN ai_detection B ON A.detection_id = B.label_id
+        WHERE B.level2 IS NOT NULL
+        and A.reg_date between date(now()) and date(now())+1
+        GROUP BY B.level2
+        ORDER BY label_count DESC;
+
+
+
+--         select B.level2 as label_name, count(*) as label_count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS label_ratio
+--         from xray_analyze_statistics A
+--                  join ai_detection B on A.detection_id = B.label_id
+--         where B.level2 is not null
+-- --           and A.reg_date between date(now()) and date(now())+1
+--         group by B.level2
+--         order by label_count desc
     </select>
 
     <select id="getAdexList" resultType="com.monitoringserver.dto.AdexDTO">
-        select name,luggage_id,reg_date from adex_images where reg_date between date(now()) and date(now())+1 group by luggage_id order by reg_date desc
+        select name,luggage_id,reg_date
+        from adex_images
+        where reg_date between date(now()) and date(now())+1
+        group by luggage_id
+        order by reg_date desc
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
@@ -66,7 +104,11 @@
     </select>
 
     <select id="getLastLugId" resultType="java.lang.String">
-        select luggage_id from adex_images where reg_date between date(now()) and date(now())+1 order by reg_date desc limit 1
+        select luggage_id
+        from adex_images
+        where reg_date between date(now()) and date(now())+1
+        order by reg_date desc
+        limit 1
     </select>
 
 </mapper>

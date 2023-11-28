@@ -32,7 +32,7 @@ public class AdexController {
     private final DeviceInfoService deviceInfoService;
     private final AdexService adexService;
 
-    @GetMapping(value = "/adex")
+    @GetMapping(value = "/view")
     public String AdexBoard(Model model){
         model.addAttribute("recentImage",adexService.getRecentImage());
         model.addAttribute("settings", deviceInfoService.getSettings());
@@ -40,31 +40,16 @@ public class AdexController {
         model.addAttribute("subImage",adexService.getSumImage());
         model.addAttribute("topTen",adexService.getTop10());
         model.addAttribute("lastLid",adexService.getLastLugId());
-
         return "adex/index";
     }
 
-    @GetMapping(value = "/adex/list")
-    public String AdexList(Optional<Integer> page, Model model, HttpServletRequest request, SearchDto searchDto) {
-        int maxPage = 10;
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, maxPage);
-        Page<AdexDTO> list =  adexService.getAdexList(pageable, searchDto);
-        model.addAttribute("uri",request.getRequestURI());
-        model.addAttribute("lists",list);
-        model.addAttribute("totalCount",adexService.getAdexCount());
-        model.addAttribute("status",adexService.getAdexStatus());
-        model.addAttribute("topTen",adexService.getTop10());
-        model.addAttribute("maxPage", maxPage);
-        return "adex/list";
-    }
-
-    @GetMapping(value = "/adex/test")
+    @GetMapping(value = "/view/test")
     @ResponseBody
     public void Test(Model model){
 
     }
 
-    @GetMapping("/adex/down")
+    @GetMapping("/view/down")
     @ResponseBody
     public void downloadMostRecentJsonAndPngFiles() {
 //        String folderPath = "C:/project/sshtest";
@@ -83,37 +68,37 @@ public class AdexController {
         }
     }
 
-    @GetMapping("/adex/status")
+    @GetMapping("/view/status")
     @ResponseBody
     public AdexStatusDTO getStatus(){
         return adexService.getAdexStatus();
     }
 
-    @GetMapping("/adex/subImage")
+    @GetMapping("/view/subImage")
     @ResponseBody
     public List<AdexDTO> getSubImage(){
         return adexService.getSumImage();
     }
 
-    @GetMapping("/adex/topTen")
+    @GetMapping("/view/topTen")
     @ResponseBody
     public List<AdexLabelDTO> getTopTen(){
         return adexService.getTop10();
     }
 
-    @GetMapping("/adex/listSubImg")
+    @GetMapping("/view/listSubImg")
     @ResponseBody
     public List<AdexDTO> getListSubImgage(@RequestParam("luggageId") String luggageId){
         return adexService.getListSubImage(luggageId);
     }
 
-    @GetMapping("/adex/lid")
+    @GetMapping("/view/lid")
     @ResponseBody
     public String getLastLid(){
         return adexService.getLastLugId();
     }
 
-    @GetMapping("/adex/imageTest")
+    @GetMapping("/view/imageTest")
     @ResponseBody
     public String uploadPngFiles() {
         String url = "http://xraysite.kr:20600/verify/api/ImageTest/multiimage-form";
@@ -143,7 +128,7 @@ public class AdexController {
 //        String folderPath = "/home/cubox/image/";
 //        String outputPath = "/home/cubox/image/bbox";
         CountDownLatch latch = new CountDownLatch(1);
-//        adexService.down();
+        adexService.down(folderPath);
         adexService.createBbox2(folderPath,outputPath,latch);
         try {
 
