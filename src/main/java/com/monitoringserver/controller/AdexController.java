@@ -1,28 +1,25 @@
-package com.monitoringserver.controller;
+/*==================================================================
+프로젝트명 : 판독 웹뷰어
+작성지 : 신정호
+작성일 : 2023년 11월 22일
+수정일 : 2023년 11월 22일
+용도 : 판독 웹뷰어 컨트롤러
+변경 이력 :
+- 2023년 11월 22일 : 버그 수정 및 기능 개선
+==================================================================*/
 
+package com.monitoringserver.controller;
 
 import com.monitoringserver.dto.AdexDTO;
 import com.monitoringserver.dto.AdexLabelDTO;
 import com.monitoringserver.dto.AdexStatusDTO;
-import com.monitoringserver.dto.SearchDto;
 import com.monitoringserver.service.AdexService;
 import com.monitoringserver.service.DeviceInfoService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
@@ -56,16 +53,11 @@ public class AdexController {
 //        String outputPath = "C:/project/sshtest/bbox";
         String folderPath = "/home/cubox/image/";
         String outputPath = "/home/cubox/image/bbox";
-        CountDownLatch latch = new CountDownLatch(1);
+        CountDownLatch latch = new CountDownLatch(1); //작업을 순차적으로 완료하기 위해 생성
         adexService.down(folderPath);
-        adexService.createBbox2(folderPath,outputPath,latch);
-        try {
-
-            latch.await();
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        adexService.createBbox(folderPath,outputPath,latch);
+        try {latch.await();}
+        catch (InterruptedException e) {e.printStackTrace();}
     }
 
     @GetMapping("/view/status")
@@ -97,52 +89,5 @@ public class AdexController {
     public String getLastLid(){
         return adexService.getLastLugId();
     }
-
-    @GetMapping("/view/imageTest")
-    @ResponseBody
-    public String uploadPngFiles() {
-        String url = "http://xraysite.kr:20600/verify/api/ImageTest/multiimage-form";
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        String folderPath2 = "C:/Users/신정호/Documents/testImage/";
-
-        // 폴더에서 PNG 파일들을 읽어들임
-        File folder = new File(folderPath2);
-        File[] pngFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".png"));
-
-        if (pngFiles != null) {
-            for (File file : pngFiles) {
-                MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-                body.add("image", new FileSystemResource(file));
-                body.add("LID", file.getName());
-                HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-                ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-
-                // 응답을 처리하거나 로깅할 수 있습니다.
-            }
-        }
-        String folderPath = "C:/project/sshtest";
-        String outputPath = "C:/project/sshtest/bbox";
-//        String folderPath = "/home/cubox/image/";
-//        String outputPath = "/home/cubox/image/bbox";
-        CountDownLatch latch = new CountDownLatch(1);
-        adexService.down(folderPath);
-        adexService.createBbox2(folderPath,outputPath,latch);
-        try {
-
-            latch.await();
-
-            // 작업이 완료되면 "good"을 반환
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return "PNG 파일 업로드 완료";
-    }
-
-
-
-
 
 }

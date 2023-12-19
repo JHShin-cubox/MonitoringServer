@@ -1,3 +1,12 @@
+/*==================================================================
+    프로젝트명 : 통합운영시스템
+    작성지 : 신정호
+    작성일 : 2023년 11월 22일
+    수정일 : 2023년 11월 22일
+    용도 : 통합관제시스템의 Mqtt를 통신스크립트
+    변경 이력 :
+     - 2023년 11월 22일 : 버그 수정 및 기능 개선
+==================================================================*/
 function pcMqtt() {
     // MQTT 클라이언트 생성
     let host = window.location.hostname
@@ -47,6 +56,7 @@ function pcMqtt() {
                 else if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == false) div1 = $("<div id='check_div"+i+"' class='waiting dimmed check_div'></div>");
                 else if(jsonData.data[i].pcStatus == 'working' && jsonData.data[i].open == true) div1 = $("<div id='check_div"+i+"' class='reading check_div'></div>");
                 else div1 = $("<div id='check_div"+i+"' class='reading dimmed check_div'></div>");
+
                 let div2 = $("<div class='content'></div>");
                 let div3 = $("<div class='left_contents'></div>");
                 let div3_1 = $("<div class='content_placement'></div>");
@@ -120,7 +130,6 @@ function pcMqtt() {
             }
             // 각 수하물 개수 업데이트
             $('#check_pass_progress'+i).attr('value',percentPass);
-
             $('#check_open_progress'+i).attr('value',percentOpen);
             $('#check_pass_count'+i).text(passLuggage);
             $('#check_open_count'+i).text(openLuggage);
@@ -238,11 +247,10 @@ function xrayMqtt() {
 
 
         //데이터 수랑 맞지 않은 태그 삭제
-        $('.xray_div').each(function(){
-            if($(this).attr('value')>count){
-                $(this).remove();
-            }
-        })
+        // for(let i=0; i<$('.trs_div').length;i++){
+        //
+        // }
+
 
         for(let i=0; i<count; i++){
             let idx = jsonData.data[i].idx; // idx로 html id mapping
@@ -250,16 +258,25 @@ function xrayMqtt() {
             let status = jsonData.data[i].pcStatus.toUpperCase(); // idx로 html id mapping
             let totalLuggage = jsonData.data[i].totalLuggage;
 
+
+            $('.xray_div').each(function(){
+                if($(this).attr('value')>count){
+                    $(this).remove();
+                }
+            })
+
             //관제 상태창 상태값 수 설정
             if(status == 'WORKING') value1++;
             else if(status == 'WAITING') value2++;
             if($('#xray'+i).text()!=ip){
                 let hidden1 = $("<input type='hidden' id='xray_status"+i+"' value='"+jsonData.data[i].pcStatus+"'/>")
                 let div1;
-                if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == true) div1 = $("<div class='waiting'></div>");
-                else if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == false) div1 = $("<div class='waiting dimmed'></div>");
-                else if(jsonData.data[i].pcStatus == 'working' && jsonData.data[i].open == true) div1 = $("<div class='reading'></div>");
-                else div1 = $("<div class='reading dimmed'></div>");
+                if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == true) div1 = $("<div class='xray_div waiting'></div>");
+                else if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == false) div1 = $("<div class='xray_div waiting dimmed'></div>");
+                else if(jsonData.data[i].pcStatus == 'working' && jsonData.data[i].open == true) div1 = $("<div class='xray_div reading'></div>");
+                else div1 = $("<div id='xray_div+i+' class='xray_div reading dimmed'></div>");
+                div1.attr('id','xray_div'+i);
+                div1.attr('value',i)
 
                 let div2 = $("<div class='content'></div>");
                 let div3 = $("<div class='left_contents'></div>");
@@ -407,12 +424,11 @@ function trsMqtt() {
         let count = jsonData.data.length;
         let value1 = 0; //reading count
         let value2 = 0; //waiting count
+        console.log("trs count : "+count)
 
         //데이터 수랑 맞지 않은 태그 삭제
         $('.trs_div').each(function(){
-            if($(this).attr('value')>count){
-                $(this).remove();
-            }
+            if($(this).attr('value')>count) $(this).remove();
         })
 
         for(let i=0; i<count; i++){
@@ -421,19 +437,18 @@ function trsMqtt() {
             let status = jsonData.data[i].pcStatus.toUpperCase(); // idx로 html id mapping
             let totalLuggage = jsonData.data[i].totalLuggage;
 
-            if(status == 'WORKING'){
-                value1++;
-            } else if(status == 'WAITING'){
-                value2++;
-            }
+            if(status == 'WORKING')value1++;
+            else if(status == 'WAITING') value2++;
 
             if($('#trs'+i).text()!=ip){
                 let div1;
                 let hidden1 = $("<input type='hidden' id='trs_status"+i+"' value='"+jsonData.data[i].pcStatus+"'/>")
-                if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == true) div1 = $("<div class='waiting'></div>");
-                else if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == false) div1 = $("<div class='waiting dimmed'></div>");
-                else if(jsonData.data[i].pcStatus == 'working' && jsonData.data[i].open == true) div1 = $("<div class='reading'></div>");
-                else div1 = $("<div class='reading dimmed'></div>");
+                if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == true) div1 = $("<div class='trs_div waiting'></div>");
+                else if(jsonData.data[i].pcStatus == 'waiting' && jsonData.data[i].open == false) div1 = $("<div class='trs_div waiting dimmed'></div>");
+                else if(jsonData.data[i].pcStatus == 'working' && jsonData.data[i].open == true) div1 = $("<div class='trs_div reading'></div>");
+                else div1 = $("<div class='trs_div reading dimmed'></div>");
+                div1.attr('id','trs_div'+i);
+                div1.attr('value',i)
 
                 let div2 = $("<div class='content'></div>");
                 let div3 = $("<div class='left_contents'></div>");
@@ -446,7 +461,7 @@ function trsMqtt() {
                 let p1 = $("<p>"+status+"</p>")
 
                 let div3_1_1_2 = $("<div class='num'></div>");
-                let p2 = $("<p id='xray"+i+"' class='reg_num' value="+i+">"+ip+"</p>")
+                let p2 = $("<p id='trs"+i+"' class='reg_num' value="+i+">"+ip+"</p>")
 
                 let div3_1_2 = $("<div class='bottom_info'></div>");
                 let p3 = $("<p class='time_tag'></p>");
@@ -552,7 +567,7 @@ function trsMqtt() {
     client.connect({
         onSuccess: function() {
             console.log("connected");
-            // xray_01 topic을 구독
+            // topic을 구독
             client.subscribe("trs");
         },
         onFailure: function() {
@@ -603,14 +618,14 @@ function adexMqtt() {
                         data.forEach(function (item) {
                             if($('#label_name'+count).length==0){
 
-                                let div1 = $('<div class="item_list_container list_active"></li>');
-
+                                let div1 = $('<div class="item_list_container list_active"></div>');
+                                let itemList = $('<div class="item_list "></div>');
                                 let labelName = $('<p class="item_name"></p>');
                                 labelName.attr('id','label_name'+count);
                                 labelName.text(item.labelName)
-                                let div1_1 = $('<div class="item_bar"></li>');
+                                let div1_1 = $('<div class="item_bar"></div>');
 
-                                let div1_1_1 = $('<div class="item_bar"></li>');
+                                let div1_1_1 = $('<div class="bar"></div>');
 
                                 let progress = $('<progress class="progress workingP" min="0" max="100"></progress>');
                                 progress.attr('value',item.labelRatio);
@@ -622,7 +637,8 @@ function adexMqtt() {
                                 labelCount.text(item.labelCount);
 
                                 $('.item_list_wrapper').append(div1)
-                                div1.append(labelName).append(div1_1).append(labelCount);
+                                div1.append(itemList)
+                                itemList.append(labelName).append(div1_1).append(labelCount);
                                 div1_1.append(div1_1_1);
                                 div1_1_1.append(progress);
 
@@ -641,19 +657,15 @@ function adexMqtt() {
                     success:function (data){
                         let count = 1;
                         const bfCount = $('.thumbnail_img').length;
-                        console.log(bfCount)
+
+                        $('.thumb_sub').each(function(){$(this).removeClass('active');})
+
                         if(bfCount != data.length){
                             if(bfCount > data.length){
-                                console.log("보내는게 적을때")
-                                for(let i=bfCount; i>bfCount - (bfCount-data.length);i--){
-                                    $('#sub'+i).parent().remove();
-                                    // $('#main'+i).remove();
-                                }
+                                for(let i=bfCount; i>bfCount - (bfCount-data.length);i--){ $('#sub'+i).parent().remove();}
                                 data.forEach(function (item) {
-                                    $('#main'+count).attr({
-                                        'src': '/adex_image/' + item.name
-                                    });
 
+                                    $('#main'+count).attr({'src': '/adex_image/' + item.name});
                                     // 서브 이미지 태그 생성
                                     if ($("#funOn").is(":checked")) {
                                         $('#sub'+count).attr({
@@ -661,9 +673,7 @@ function adexMqtt() {
                                         });
                                     }
                                     else{
-                                        $('#sub'+count).attr({
-                                            'src': '/adex_image/' + item.name
-                                        });
+                                        $('#sub'+count).attr({'src': '/adex_image/' + item.name});
                                     }
                                     if(count ==1){
                                         if ($("#funOn").is(":checked")) {
@@ -678,11 +688,10 @@ function adexMqtt() {
                                 });
                             }
                             if(bfCount < data.length){
-                                console.log("보내는게 많을때")
                                 for(let i=bfCount+1;i<=data.length;i++){
 
                                     let div1 = $("<div class='thumbnail_img'/></div>")
-                                    let subImg = $("<img id='sub"+i+"' value="+i+" />");
+                                    let subImg = $("<img id='sub"+i+"' value="+i+" class='thumb_sub' />");
                                     let mainImg = $("<img id='main"+i+"' value="+i+" style='display:none' />");
                                     $('.thumbnail_container').append(div1);
                                     div1.append(subImg).append(mainImg);
@@ -716,7 +725,6 @@ function adexMqtt() {
                                 });
                             }
                         } else{
-                            console.log("보내는게 같을때")
                             data.forEach(function (item) {
                                 $('#main'+count).attr({
                                     'src': '/adex_image/' + item.name
@@ -747,6 +755,7 @@ function adexMqtt() {
                                 count++;
                             });
                         }
+                        $('#sub1').addClass('active');
                     }
                 })
                 let jsonData = JSON.parse(message.payloadString);

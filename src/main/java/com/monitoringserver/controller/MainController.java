@@ -1,5 +1,14 @@
-package com.monitoringserver.controller;
+/*==================================================================
+프로젝트명 : 통합관제시스템
+작성지 : 신정호
+작성일 : 2023년 11월 22일
+수정일 : 2023년 11월 22일
+용도 : 통합관제 시스템 컨트롤러
+변경 이력 :
+- 2023년 11월 22일 : 버그 수정 및 기능 개선
+==================================================================*/
 
+package com.monitoringserver.controller;
 
 import com.monitoringserver.service.DeviceInfoService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +28,7 @@ public class MainController {
         Double viewerWaitingPercentD; Double viewerReadingPercentD; Double xrayWaitingPercentD; Double xrayReadingPercentD;
         Double trsWaitingPercentD; Double trsReadingPercentD;
         //각 상태값과 총 장비수를 나눠서 퍼센트 계산
-        // Nan(0으로 나누는것) 막기위해 장비수가 0이면 나누지 말고 0으로 표시
+        // 0으로 나누는걸 막기 위한 수식
         if(deviceInfoService.getViewerInfo().size()==0){
             viewerWaitingPercentD = 0d; viewerReadingPercentD = 0d;
         } else {
@@ -82,8 +91,6 @@ public class MainController {
         var trsInfo = deviceInfoService.getTrsInfo();
         var viewerInfo = deviceInfoService.getViewerInfo();
 
-        System.out.println(viewerInfo);
-
         model.addAttribute("viewerInfo",viewerInfo);
         model.addAttribute("viewerWaitingCount",viewerWCount);
         model.addAttribute("viewerReadingCount",viewerRCount);
@@ -103,13 +110,7 @@ public class MainController {
         model.addAttribute("trsReadingPercent", trsReadingPercent);
 
         model.addAttribute("settings", deviceInfoService.getSettings());
-        System.out.println(deviceInfoService.getXrayInfo());
-        return "index_ori";
-    }
-
-    @GetMapping(value = "/2")
-    public String testBoard(Model model){
-        return "index2";
+        return "index";
     }
 
     @GetMapping(value = "/main")
@@ -117,7 +118,7 @@ public class MainController {
         Double viewerWaitingPercentD; Double viewerReadingPercentD; Double xrayWaitingPercentD; Double xrayReadingPercentD;
         Double trsWaitingPercentD; Double trsReadingPercentD;
         //각 상태값과 총 장비수를 나눠서 퍼센트 계산
-        // Nan(0으로 나누는것) 막기위해 장비수가 0이면 나누지 말고 0으로 표시
+        // 0으로 나누는걸 막기 위한 수식
         if(deviceInfoService.getViewerInfo().size()==0){
             viewerWaitingPercentD = 0d; viewerReadingPercentD = 0d;
         } else {

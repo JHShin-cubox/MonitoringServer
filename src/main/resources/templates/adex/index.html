@@ -71,7 +71,7 @@
                             <div class="thumbnail_container">
                                 <th:block th:if="${recentImage!=null}" th:each="list : ${subImage}">
                                     <div class="thumbnail_img">
-                                        <img th:id="sub+${listStat.count}" th:value="${listStat.count}" th:src="'/adex_image/bbox/'+${list.name}">
+                                        <img th:id="sub+${listStat.count}" th:value="${listStat.count}" th:src="'/adex_image/bbox/'+${list.name}" class="thumb_sub">
                                         <img style="display: none" th:id="main+${listStat.count}" th:value="${listStat.count}" th:src="'/adex_image/'+${list.name}">
                                     </div>
                                 </th:block>

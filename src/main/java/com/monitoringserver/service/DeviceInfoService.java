@@ -21,4 +21,5 @@ public interface DeviceInfoService {
    Integer getTrsReadingCount();
 
    SettingDTO getSettings();
+
 }

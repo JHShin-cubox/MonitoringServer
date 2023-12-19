@@ -25,5 +25,4 @@ public interface DeviceInfoMapper {
     Integer getTrsReadingCount();
 
     SettingDTO getSettings();
-
 }

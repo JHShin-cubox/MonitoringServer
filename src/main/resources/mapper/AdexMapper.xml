@@ -7,6 +7,7 @@
         SELECT level2 FROM ai_detection
         <where>
             AND label_id = #{labelId}
+            AND flag = 'Y'
         </where>
     </select>
     <insert id="insertAdex" parameterType="java.lang.String">
